@@ -12,6 +12,16 @@ Icon
 # Thumbnails
 ._*
 
+# emscripten
+emsdk
+testbcur.html
+.shell_minimal.html.swp
+js/.jadeqr.js.swp
+test/test.wasm
+testbcur.js
+testbcur.wasm
+
+
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
 .fseventsd
