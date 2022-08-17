@@ -40,7 +40,11 @@ endif
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)
-    LDLIBS +=  -lm -lc++ -lc++abi -lgcc_s -lgcc
+    ifeq ($(__EMSCRIPTEN__), "")
+        LDLIBS +=  -lm -lc++ -lc++abi -lgcc_s -lgcc
+    else
+        LDLIBS +=  -lm -lc++ -lc++abi
+    endif
 else ifeq ($(findstring MINGW64, $(UNAME)), MINGW64)
     # on windows building with msys2/mingw64
     LDLIBS +=  -lm -lc++ -lws2_32
