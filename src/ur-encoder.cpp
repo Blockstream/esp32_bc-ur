@@ -27,6 +27,20 @@ void EMSCRIPTEN_KEEPALIVE urfree_encoder(void* const encoder) {
     }
 }
 
+uint32_t EMSCRIPTEN_KEEPALIVE urseqnum_encoder(void* const encoder)
+{
+    assert(encoder);
+    ur::UREncoder* urencoder = (ur::UREncoder*) encoder;
+    return urencoder->seq_num();
+}
+
+uint32_t EMSCRIPTEN_KEEPALIVE urseqlen_encoder(void* const encoder)
+{
+    assert(encoder);
+    ur::UREncoder* urencoder = (ur::UREncoder*) encoder;
+    return urencoder->seq_len();
+}
+
 bool EMSCRIPTEN_KEEPALIVE uris_complete_encoder(void* const encoder) {
     assert(encoder);
     ur::UREncoder* urencoder = (ur::UREncoder*) encoder;
