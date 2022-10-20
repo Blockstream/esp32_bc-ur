@@ -32,6 +32,30 @@ bool EMSCRIPTEN_KEEPALIVE urreceive_part_decoder(void* const decoder, const char
     return urdecoder->receive_part(part);
 }
 
+size_t EMSCRIPTEN_KEEPALIVE urprocessed_parts_count_decoder(void* const decoder) {
+    assert(decoder);
+    ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
+    return urdecoder->processed_parts_count();
+}
+
+size_t EMSCRIPTEN_KEEPALIVE urreceived_parts_count_decoder(void* const decoder) {
+    assert(decoder);
+    ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
+    return urdecoder->received_part_indexes().size();
+}
+
+size_t EMSCRIPTEN_KEEPALIVE urexpected_part_count_decoder(void* const decoder) {
+    assert(decoder);
+    ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
+    return urdecoder->expected_part_count();
+}
+
+double EMSCRIPTEN_KEEPALIVE urestimated_percent_complete_decoder(void* const decoder) {
+    assert(decoder);
+    ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
+    return urdecoder->estimated_percent_complete();
+}
+
 bool EMSCRIPTEN_KEEPALIVE uris_success_decoder(void* const decoder) {
     assert(decoder);
     ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
@@ -44,7 +68,7 @@ bool EMSCRIPTEN_KEEPALIVE uris_failure_decoder(void* const decoder) {
     return urdecoder->is_failure();
 }
 
-bool EMSCRIPTEN_KEEPALIVE uris_complete_decoder(void* const decoder){
+bool EMSCRIPTEN_KEEPALIVE uris_complete_decoder(void* const decoder) {
     assert(decoder);
     ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
     return urdecoder->is_complete();
