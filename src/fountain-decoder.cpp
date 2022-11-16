@@ -50,8 +50,10 @@ bool FountainDecoder::receive_part(FountainEncoder::Part& encoder_part) {
     // Don't continue if this part doesn't validate
     if(!validate_part(encoder_part)) return false;
 
+
     // Add this part to the queue
-    auto p = Part(encoder_part);
+    Part p = Part(encoder_part);
+    // here we are returning a std::set<size_t> 
     last_part_indexes_ = p.indexes();
     enqueue(p);
 
@@ -68,7 +70,7 @@ bool FountainDecoder::receive_part(FountainEncoder::Part& encoder_part) {
     return true;
 }
 
-void FountainDecoder::enqueue(Part &&p) {
+void FountainDecoder::enqueue(Part &p) {
     _queued_parts.push_back(p);
 }
 

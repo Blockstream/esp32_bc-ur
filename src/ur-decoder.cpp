@@ -8,47 +8,49 @@
 #include "ur-decoder.hpp"
 #include "bytewords.hpp"
 
+#include "emscripten.h"
 extern "C" {
 
-void urcreate_decoder(void** const decoder) {
+
+void EMSCRIPTEN_KEEPALIVE urcreate_decoder(void** const decoder) {
     assert(decoder && !*decoder);
     *decoder = new ur::URDecoder();
     assert(*decoder);
 }
 
-void urfree_decoder(void* const decoder) {
+void EMSCRIPTEN_KEEPALIVE urfree_decoder(void* const decoder) {
     if (decoder) {
         ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
         delete urdecoder;
     }
 }
 
-bool urreceive_part_decoder(void* const decoder, const char* string) {
+bool EMSCRIPTEN_KEEPALIVE urreceive_part_decoder(void* const decoder, const char* string) {
     assert(decoder);
     ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
     const std::string part(string);
     return urdecoder->receive_part(part);
 }
 
-bool uris_success_decoder(void* const decoder) {
+bool EMSCRIPTEN_KEEPALIVE uris_success_decoder(void* const decoder) {
     assert(decoder);
     ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
     return urdecoder->is_success();
 }
 
-bool uris_failure_decoder(void* const decoder) {
+bool EMSCRIPTEN_KEEPALIVE uris_failure_decoder(void* const decoder) {
     assert(decoder);
     ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
     return urdecoder->is_failure();
 }
 
-bool uris_complete_decoder(void* const decoder){
+bool EMSCRIPTEN_KEEPALIVE uris_complete_decoder(void* const decoder){
     assert(decoder);
     ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
     return urdecoder->is_complete();
 }
 
-void urresult_ur_decoder(void* const decoder, uint8_t** result, size_t* result_len, const char** type) {
+void EMSCRIPTEN_KEEPALIVE urresult_ur_decoder(void* const decoder, uint8_t** result, size_t* result_len, const char** type) {
     assert(decoder);
     ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
     const ur::UR& ur = urdecoder->result_ur();
@@ -126,7 +128,6 @@ bool URDecoder::validate_part(const std::string& type) {
 }
 
 bool URDecoder::receive_part(const std::string& s) {
-    try {
         // Don't process the part if we're already done
         if(result_.has_value()) return false;
 
@@ -142,7 +143,7 @@ bool URDecoder::receive_part(const std::string& s) {
         }
 
         // Multi-part URs must have two path components: seq/fragment
-        if(components.size() != 2) throw InvalidPathLength();
+        if(components.size() != 2) return false;;
         auto seq = components[0];
         auto fragment = components[1];
 
@@ -163,9 +164,6 @@ bool URDecoder::receive_part(const std::string& s) {
         }
 
         return true;
-    } catch(...) {
-        return false;
-    }
 }
 
 }

@@ -78,7 +78,7 @@ private:
     std::deque<Part> _queued_parts;
 
     void enqueue(const Part &p);
-    void enqueue(Part &&p);
+    void enqueue(Part &p);
     void process_queue_item();
     void reduce_mixed_by(const Part& p);
     Part reduce_part_by_part(const Part& a, const Part& b) const;

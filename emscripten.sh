@@ -20,17 +20,42 @@ if [ -f /proc/cpuinfo ]; then
 fi
 
 
-emconfigure ./configure
-emmake make -j ${num_jobs}
-
-# -s EXPORTED_FUNCTIONS=urcreate_decoder,urreceive_part_decoder,urfree_decoder,urreceive_part_decoder,uris_success_decoder,uris_failure_decoder,uris_complete_decoder,urresult_ur_decoder \
-# FIXME: if we use linkable the result binary is much bigger but i can't seem to tell emcc which functions i want to export
-emcc -O3 -v \
-    -s EXPORTED_RUNTIME_METHODS=ccall,cwrap \
-    ./src/libbc-ur.a \
-    -s ASSERTIONS \
-    -s LINKABLE \
-    -o testbcur.html \
+for filename in src/*.c; do
+    emcc -gsource-map -v \
+         -std=c99 \
+         ${filename} \
+    -s SAFE_HEAP=1 \
+    -fsanitize=undefined \
+    -s WARN_UNALIGNED=1 \
+    -fsanitize=null \
+    -Wcast-align -Wover-aligned \
+    -s ALLOW_MEMORY_GROWTH=1 \
+    -s WASM=1 \
+    -s ASSERTIONS=2 \
+    -s STACK_OVERFLOW_CHECK=2 \
+    -s ENVIRONMENT=web \
+    -s EXIT_RUNTIME=0 \
+         -c \
+        -o ${filename}.o
+done
+em++ -gsource-map -v \
+    src/*.o \
+    --profiling \
+    -fsanitize=undefined \
+    -fsanitize=null \
     -std=c++17 \
-    --shell-file shell_minimal.html \
-    --minify 0
+    -s SAFE_HEAP=1 \
+    -s ENVIRONMENT=web \
+    -s WARN_UNALIGNED=1 \
+    -s ALLOW_MEMORY_GROWTH=1 \
+    -Wcast-align -Wover-aligned \
+    -stdlib=libc++ \
+     src/*.cpp \
+    -s WASM=1 \
+    -s ASSERTIONS=2 \
+    -Wcast-align -Wover-aligned \
+    -s STACK_OVERFLOW_CHECK=2 \
+    -s EXIT_RUNTIME=0 \
+    -s EXPORTED_RUNTIME_METHODS=ccall,cwrap,getValue,setValue \
+    -o testbcur.html \
+    --shell-file shell_minimal.html

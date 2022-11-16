@@ -1,3 +1,8 @@
 .hidden {
     display: none;
 }
+
+div {
+    margin: auto;
+    width: 900px;
+}
