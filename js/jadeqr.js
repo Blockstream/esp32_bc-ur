@@ -6,11 +6,10 @@ var qrTransport = function() {
     var last_result = '';
 
     const onResult = function(result, qrScanner) {
-        console.log('MATCH');
         if (result.data == last_result) {
             return;
         }
-        const decoder_deref = Module.getValue(decoder_ptr, '*');
+        let decoder_deref = Module.getValue(decoder_ptr, '*');
         var result_receive = ccall(
             'urreceive_part_decoder', 'number', ['number', 'string'],
             [decoder_deref, result.data]);
@@ -35,13 +34,29 @@ var qrTransport = function() {
                 Module.getValue(decoder_len_ptr, 'i32'));
 
             let decoded = cbor.decodeAllSync(cbor_data);
-            // FIXME: clean up decoder
+            ccall('urfree_decoder', null, [['number']], decoder_deref);
+            decoder_deref = null;
+            Module._free(decoder_ptr);
             console.log(decoded);
-            console.log("Doing a fetch");
+            console.log('Doing a fetch');
             console.log(new Date());
-            fetch(
-                decoded[0]['result']['http_request']['params']['urls'][0],
-                {method: 'POST'})
+            const isonion =
+                document.location.hostname.split('.').at(-1) === 'onion';
+
+            if (!isonion) {
+                var url =
+                    decoded[0]['result']['http_request']['params']['urls'][0];
+            } else {
+                for (const u in
+                     decoded[0]['result']['http_request']['params']['urls']) {
+                    if (u.substr(0, u.lastIndexOf('/')).endsWith('onion')) {
+                        var url = u;
+                        break;
+                    }
+                }
+            }
+
+            fetch(url, {method: 'POST'})
                 .then(function(response) {
                     return response.json();
                 })
@@ -66,7 +81,7 @@ var qrTransport = function() {
                             [encoder_ptr], 'jade-pin', encoded, encoded.length,
                             250, 0, 8
                         ]);
-                    const encoder_deref = Module.getValue(encoder_ptr, '*');
+                    let encoder_deref = Module.getValue(encoder_ptr, '*');
                     var next_piece = Module._malloc(4);
                     var qrs = [];
                     while (true) {
@@ -83,6 +98,10 @@ var qrTransport = function() {
                         const next_deref = Module.getValue(next_piece, '*');
                         qrs.push(UTF8ToString(next_deref).toUpperCase());
                     }
+
+                    ccall('urfree_encoder', null, [['number']], encoder_deref);
+                    encoder_deref = null;
+                    Module._free(encoder_ptr);
                     var qrcode_instance = null;
 
                     const qr = document.getElementById('qrcode');
@@ -102,7 +121,6 @@ var qrTransport = function() {
                                 correctLevel: QRCode.CorrectLevel.L
                             });
                         }
-                        console.log(qrs[counter]);
                         if (counter + 1 >= qrs.length) {
                             counter = -1;
                         }
@@ -115,7 +133,6 @@ var qrTransport = function() {
                     const next_btn = document.getElementById('nextstep');
                     next_btn.classList.remove('hidden');
                     next_btn.onclick = function() {
-                        console.log('We did something yay');
                         clearTimeout(timeout);
                         decoder_ptr = Module._malloc(4);
                         Module.setValue(decoder_ptr, null, '*');
@@ -139,6 +156,8 @@ var qrTransport = function() {
         new QrScanner(videoElem, result => onResult(result, qrScanner), {
             returnDetailedScanResult: true,
             highlightScanRegion: true,
+            highlightCodeOutline: true,
+
         });
     qrScanner.start();
 };
