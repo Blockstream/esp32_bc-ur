@@ -42,15 +42,14 @@ var qrTransport = function() {
             console.log(new Date());
             const isonion =
                 document.location.hostname.split('.').at(-1) === 'onion';
-
-            if (!isonion) {
-                var url =
+            var url =
                     decoded[0]['result']['http_request']['params']['urls'][0];
-            } else {
+
+            if (isonion) {
                 for (const u in
                      decoded[0]['result']['http_request']['params']['urls']) {
                     if (u.substr(0, u.lastIndexOf('/')).endsWith('onion')) {
-                        var url = u;
+                        url = u;
                         break;
                     }
                 }
