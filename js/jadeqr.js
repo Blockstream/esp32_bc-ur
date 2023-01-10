@@ -1,5 +1,7 @@
 var qrTransport = function() {
     const videoElem = document.getElementById('video');
+    const progressBarElem = document.getElementById('progressbar');
+    const labelProgressElem = document.getElementById('labelprogressbar');
     let decoder_ptr = Module._malloc(4);
     Module.setValue(decoder_ptr, null, '*');
     ccall('urcreate_decoder', null, [['number']], [[decoder_ptr]]);
@@ -14,11 +16,21 @@ var qrTransport = function() {
             'urreceive_part_decoder', 'number', ['number', 'string'],
             [decoder_deref, result.data]);
         last_result = result.data;
+        var received = ccall(
+            'urreceived_parts_count_decoder', 'number', ['number'], [decoder_deref]);
+        var expected = ccall(
+            'urexpected_part_count_decoder', 'number', ['number'], [decoder_deref]);
+        progressBarElem.setAttribute('max', expected);
+        progressBarElem.setAttribute('value', received);
         var is_complete = ccall(
             'uris_complete_decoder', 'number', ['number'], [decoder_deref]);
         if (!is_complete) {
             return;
         }
+        labelProgressElem.classList.add('hidden');
+        progressBarElem.classList.add('hidden');
+        progressBarElem.setAttribute('max', 10);
+        progressBarElem.setAttribute('value', 0);
         qrScanner.stop();
         var decoder_res_ptr = Module._malloc(4);
         var decoder_len_ptr = Module._malloc(4);
@@ -146,6 +158,8 @@ var qrTransport = function() {
                     qr.classList.add('hidden');
                     qr.innerHTML = '';
                     qrScanner.start();
+                    progressBarElem.classList.remove('hidden');
+                    labelProgressElem.classList.remove('hidden');
                 }
             })
             .catch(function(err) {
