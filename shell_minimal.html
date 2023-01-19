@@ -7,21 +7,50 @@
 
     <title>Blockstream Jade Qr Transport</title>
 
+    <link rel="stylesheet" href="https://use.typekit.net/chx2fbn.css">
     <link rel="stylesheet" href="css/main.css" />
     <link rel="icon" href="images/favicon.jpeg" />
   </head>
   <body>
+    <header>
+      <a class="logo" href="/">
+        <img src="images/logo.svg" class="logo-img" alt="logo" />
+      </a>
+    </header>
+    <main>
+      <div class="controls"><button id="backstep"><img src="./images/arrow.svg" /></button>
+        <div id="troubleshoot"></div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <img src="./images/vertical-jade.svg" id="finalImg" class="hidden" alt="icon" />
+          <img src="./images/scan-light.svg" id="step-icon" class="hidden" alt="icon" />
+          <span id="step-info" class="hidden"></span>
+          <h1 id="title"></h1>
+          <p id="subtitle"></p>
+        </div>
+        
+        <img id="heroImg" src="./images/unlockPin.svg" alt="icon" />
+        <video width="305" height="305" id="video" class="hidden"></video>
+        <span class="hidden" id="camera-error">Camera permission denied. Check your browser or system settings</span>
+        <div id="qrcode" class="hidden"></div>
+        <label class="hidden" id="labelprogressbar" for="progressbar">Scanning qr progress:</label>
+        <progress class="hidden" id="progressbar" value="0" max="10"> 0% </progress>
+        
+        <div class="row">
+          <button id="nextstep">Done</button>
+          <p class="hidden hepltext" id="helptext">Don’t see the QR scanner?
+            Click on the <span><img src="./images/checkmark.svg" alt="icon" /></span> on Jade.</p>
+          
+          <a href="/" class="hidden" id="explore">Explore</a>
+        </div>
+      </div>
+    </main>
+
     <script src="js/qr-scanner.umd.min.js"></script>
     <script src="js/cbor-web.js"></script>
     <script src="js/jadeqr.js"></script>
     <script src="js/qrcode.js"></script>
-
-    <label id="labelprogressbar" for="progressbar">Scanning qr progress:</label>
-    <progress id="progressbar" value="0" max="10"> 0% </progress>
-
-    <video id="video"></video>
-    <div id="qrcode"></div>
-    <button id="nextstep" class="hidden">Next step</button>
 
     {{{ SCRIPT }}}
   </body>
