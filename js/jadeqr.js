@@ -66,7 +66,7 @@ function showStepOne(){
         next_btn.removeEventListener('click', eventScreenOne);
     }
     errorCameraMsg.classList.add('hidden');
-    videoElem.style.backgroundImage = '../images/background.svg';
+    videoElem.style.backgroundImage = './images/background.svg';
     checkIfCameraIsEnabled();
     stepIcon.classList.remove('hidden');
     stepInfo.innerText = 'Step 1 of 4';
@@ -87,7 +87,7 @@ function showStepTwo(){
     prev_btn.classList.add('hidden');
     console.log('this is step 2');
     videoElem.classList.add('hidden');
-    stepIcon.src="../images/shield-check-light.svg";
+    stepIcon.src="./images/shield-check-light.svg";
     stepInfo.innerText = 'Step 2 of 4';
     title.innerText = 'Scan the QR code';
     subtitle.innerText = 'Establish secure channel';
@@ -107,7 +107,7 @@ function showStepThree(){
     controls.style.justifyContent = 'space-between';
     prev_btn.classList.remove('hidden');
     videoElem.classList.remove('hidden');
-    stepIcon.src="../images/device-mobile-camera.svg";
+    stepIcon.src="./images/device-mobile-camera.svg";
     stepInfo.innerText = 'Step 3 of 4';
     title.innerText = 'Scan QR on Jade';
     subtitle.innerText = 'Provide PIN data';
@@ -123,7 +123,7 @@ function showStepFourth() {
     controls.style.justifyContent = 'flex-end';
     prev_btn.classList.add('hidden');
     videoElem.classList.add('hidden');
-    stepIcon.src="../images/checks-light.svg";
+    stepIcon.src="./images/checks-light.svg";
     stepInfo.innerText = 'Step 4 of 4';
     title.innerText = 'Scan the QR code';
     subtitle.innerText = 'Establish secure channel';
@@ -337,7 +337,7 @@ var qrTransport = function() {
                         }
                         timeout = setTimeout(function() {
                             qr_updater(counter + 1)
-                        }, 5000);
+                        }, 3000);
                     };
                     qr_updater(0);
                     if( setScreen === "stepOne") {
@@ -357,7 +357,7 @@ var qrTransport = function() {
                     next_btn.classList.remove('hidden');
 
 
-                    // REMOVE THIS EVENT LISTENER ON THE FINAL SCREEN
+                    // REMOVE THIS EVENT LISTENER ON THE FINAL SCREEN TO FIX THE ERROR
                     // -------------------
                     //
                     next_btn.onclick = function() {
