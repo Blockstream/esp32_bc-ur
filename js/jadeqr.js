@@ -27,6 +27,10 @@ let setScreen = "start";
 
 // End State
 
+function openHome(){
+    window.open('/pinqr/', '_self');
+}
+
 function eventScreenOne() {
     setScreen = screen[1];
     showStepOne();
@@ -47,6 +51,7 @@ function showStart(){
     setScreen = screen[0];
     errorCameraMsg.classList.add('hidden');
     prev_btn.removeEventListener('click', showStart);
+    prev_btn.addEventListener('click', openHome)
     next_btn.classList.remove('hidden');
     if(setScreen === 'start') {
         next_btn.addEventListener('click', eventScreenOne);
@@ -69,7 +74,7 @@ function showStepOne(){
     videoElem.style.backgroundImage = './images/background.svg';
     checkIfCameraIsEnabled();
     stepIcon.classList.remove('hidden');
-    stepInfo.innerText = 'Step 1 of 4';
+    stepInfo.innerText = 'STEP 1 OF 4';
     stepInfo.classList.remove('hidden');
     title.innerText = 'Scan QR on Jade';
     subtitle.innerText = "Locate your Jade's blind oracle";
@@ -78,6 +83,7 @@ function showStepOne(){
     progressBarElem.classList.remove('hidden');
     next_btn.classList.add('hidden');
     helpText.classList.add('hidden');
+    prev_btn.removeEventListener('click', openHome);
 }
 
 function showStepTwo(){
@@ -88,7 +94,7 @@ function showStepTwo(){
     console.log('this is step 2');
     videoElem.classList.add('hidden');
     stepIcon.src="./images/shield-check-light.svg";
-    stepInfo.innerText = 'Step 2 of 4';
+    stepInfo.innerText = 'STEP 2 OF 4';
     title.innerText = 'Scan the QR code';
     subtitle.innerText = 'Establish secure channel';
     qr.classList.remove('hidden');
@@ -108,7 +114,7 @@ function showStepThree(){
     prev_btn.classList.remove('hidden');
     videoElem.classList.remove('hidden');
     stepIcon.src="./images/device-mobile-camera.svg";
-    stepInfo.innerText = 'Step 3 of 4';
+    stepInfo.innerText = 'STEP 3 OF 4';
     title.innerText = 'Scan QR on Jade';
     subtitle.innerText = 'Provide PIN data';
     // qrCode.classList.remove('hidden');
@@ -124,7 +130,7 @@ function showStepFourth() {
     prev_btn.classList.add('hidden');
     videoElem.classList.add('hidden');
     stepIcon.src="./images/checks-light.svg";
-    stepInfo.innerText = 'Step 4 of 4';
+    stepInfo.innerText = 'STEP 4 OF 4';
     title.innerText = 'Scan the QR code';
     subtitle.innerText = 'Establish secure channel';
     qr.classList.remove('hidden');
@@ -175,6 +181,7 @@ function checkIfCameraIsEnabled(){
           }
         });
       } else {
+        console.log('nnnn')
         errorCameraMsg.classList.remove('hidden');
         videoElem.style.backgroundImage = "none";
         console.log("Web camera is not available");
