@@ -1,5 +1,5 @@
+const browser = bowser.getParser(window.navigator.userAgent);
 // UI elements
-
 const mainContainer = document.getElementsByTagName('main')[0];
 const controls = document.querySelector('.controls');
 const prev_btn = document.getElementById('backstep');
@@ -72,7 +72,9 @@ function showStepOne(){
     }
     errorCameraMsg.classList.add('hidden');
     videoElem.style.backgroundImage = './images/background.svg';
-    checkIfCameraIsEnabled();
+    if (browser.getBrowser().name !== 'Safari'){
+        checkIfCameraIsEnabled();
+    }
     stepIcon.classList.remove('hidden');
     stepInfo.innerText = 'STEP 1 OF 4';
     stepInfo.classList.remove('hidden');
@@ -132,7 +134,7 @@ function showStepFourth() {
     stepIcon.src="./images/checks-light.svg";
     stepInfo.innerText = 'STEP 4 OF 4';
     title.innerText = 'Scan the QR code';
-    subtitle.innerText = 'Establish secure channel';
+    subtitle.innerText = 'Validate PIN entry';
     qr.classList.remove('hidden');
     qr.style.display = "flex";
     progressBarElem.classList.add('hidden');
@@ -181,7 +183,6 @@ function checkIfCameraIsEnabled(){
           }
         });
       } else {
-        console.log('nnnn')
         errorCameraMsg.classList.remove('hidden');
         videoElem.style.backgroundImage = "none";
         console.log("Web camera is not available");
@@ -213,6 +214,7 @@ var qrTransport = function() {
         let last_result = '';
 
         const onResult = function(result, qrScanner) {
+            // console.log(result.data);
             if (result.data == last_result) {
                 return;
             }
@@ -297,7 +299,7 @@ var qrTransport = function() {
                             'number', 'number'
                         ],
                         [
-                            [encoder_ptr], 'jade-pin', encoded, encoded.length, 50,
+                            [encoder_ptr], 'jade-pin', encoded, encoded.length, 10,
                             0, 8
                         ]);
                     let encoder_deref = Module.getValue(encoder_ptr, '*');

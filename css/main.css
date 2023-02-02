@@ -349,12 +349,13 @@ video {
     border: none;
     outline: none;
     color: #fff;
-    padding: 17px 55px;
+    padding: 17px 68px;
     font-style: normal;
     font-weight: 600;
     font-size: 14px;
     line-height: 17px;
     font-family: 'din-2014','source sans pro', sans-serif;
+    max-height: 50px;
 }
 
 #helptext {
@@ -425,4 +426,34 @@ video {
     #finalImg {
         max-height: 270px;
     }
+}
+
+/* for max-width 375px */
+@media screen and (max-width: 375px) { 
+
+container {
+    padding: 7px 5%;
+    gap: 2%;
+}
+
+#title {
+    font-size: 24px;
+}
+subtitle {
+    font-size: 18px;
+}
+
+#qrcode{
+    width: 240px;
+}
+
+#qrcode > img, #qrcode > canvas {
+    width: 180px;
+    height: 180px;
+}
+#helptext {
+    font-size: 16px;
+}
+
+
 }
