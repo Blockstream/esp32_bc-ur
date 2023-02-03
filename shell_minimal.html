@@ -45,14 +45,18 @@
           <a href="https://blockstream.com/jadewallets" class="hidden" id="explore">Explore</a>
         </div>
       </div>
-      <div class="hidden" id="camera-error">
-        <img src="./images/video-camera.svg" alt="icon" />
-        <h4 class="camera-error-title">Enable Camera</h4>
-        <p>Camera permission denied. Check your browser or system settings.</p>
-        <button id="refresh">Refresh</button>
-        <a class="camera-error-link" href="https://help.blockstream.com/hc/en-us/articles/15161961827993">Troubleshoot</a>
-      </div>
     </main>
+    <div class="hidden" id="camera-error">
+      <div id="camera-error-modal">
+        <img src="./images/video-camera.svg" alt="icon" />
+        <div>
+          <h4 class="camera-error-title">Enable Camera</h4>
+          <p>Camera permission denied. Check your browser or system settings.</p>
+        </div>
+        <button id="refresh" onclick="location.reload();">Refresh</button>
+        <a class="camera-error-link" href="https://help.blockstream.com/hc/en-us/articles/15161961827993" target="_blank">Troubleshoot</a>
+      </div>
+    </div>
 
     <script src="js/qr-scanner.umd.min.js"></script>
     <script src="js/cbor-web.js"></script>
@@ -60,5 +64,6 @@
     <script src="js/qrcode.js"></script>
 
     {{{ SCRIPT }}}
+    
   </body>
 </html>
