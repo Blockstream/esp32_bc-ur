@@ -33,7 +33,6 @@
         
         <img id="heroImg" src="./images/unlockPin.svg" alt="icon" />
         <video width="305" height="305" id="video" class="hidden"></video>
-        <span class="hidden" id="camera-error">Camera permission denied. Check your browser or system settings</span>
         <div id="qrcode" class="hidden"></div>
         <label class="hidden" id="labelprogressbar" for="progressbar">Scanning qr progress:</label>
         <progress class="hidden" id="progressbar" value="0" max="10"> 0% </progress>
@@ -45,6 +44,13 @@
           
           <a href="https://blockstream.com/jadewallets" class="hidden" id="explore">Explore</a>
         </div>
+      </div>
+      <div class="hidden" id="camera-error">
+        <img src="./images/video-camera.svg" alt="icon" />
+        <h4 class="camera-error-title">Enable Camera</h4>
+        <p>Camera permission denied. Check your browser or system settings.</p>
+        <button id="refresh">Refresh</button>
+        <a class="camera-error-link" href="https://help.blockstream.com/hc/en-us/articles/15161961827993">Troubleshoot</a>
       </div>
     </main>
 

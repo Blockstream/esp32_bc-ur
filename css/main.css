@@ -410,12 +410,15 @@ video {
 }
 
 #camera-error {
-    color: #FF0000;
+    width: 100%;
+    max-width: 295px;
+    max-height: 330px;
+    background-color: #2C3037;
+    height: 100%;
     font-size: 16px;
     font-weight: 400;
     line-height: 24px;
     text-align: center;
-    max-width: 225px;
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);

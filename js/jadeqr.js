@@ -72,6 +72,7 @@ function showStepOne(){
     }
     errorCameraMsg.classList.add('hidden');
     videoElem.style.backgroundImage = './images/background.svg';
+    // console.log(browser.getBrowser().name);
     if (browser.getBrowser().name !== 'Safari'){
         checkIfCameraIsEnabled();
     }
