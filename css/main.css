@@ -3,11 +3,13 @@
     padding: 0;
     box-sizing: border-box;
 }
+html {
+    font-size: 16px;
+}
 
 body {
     background-color: #111316;
     color: #fff;
-    font-size: 16px;
     font-family:'din-2014','source sans pro', sans-serif;
     /* background-image: url('../images/backdrop.svg'); */
     background-repeat: no-repeat;
@@ -27,7 +29,8 @@ header {
 }
 
 main {
-    height: calc(100vh - 100px);
+    position: relative;
+    height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -37,6 +40,7 @@ main {
     background-repeat: no-repeat;
     background-size: 115%;
     padding: 10px;
+    overflow: hidden;
 }
 
 .hero {
@@ -55,7 +59,7 @@ main {
 .hero-title {
     z-index: 2;
     font-weight: 700;
-    font-size: 42px;
+    font-size: 2.62rem; 
     line-height: 50px;
     color: #FFFFFF;
     max-width: 635px;
@@ -63,7 +67,7 @@ main {
 
 @media screen and (max-width: 650px) {
     .hero-title {
-        font-size: 26px;
+        font-size: 1.625rem;
         line-height: 31px;
     }
 }
@@ -71,7 +75,7 @@ main {
 .hero-subtitle {
     z-index: 2;
     font-weight: 400;
-    font-size: 20px;
+    font-size: 1.25rem;
     line-height: 24px;
     max-width: 635px;
     margin: 18px 0 30px;
@@ -79,7 +83,7 @@ main {
 
 @media screen and (max-width: 650px) {
     .hero-subtitle {
-        font-size: 20px;
+        font-size: 1.25rem;
         line-height: 23px;
     }
 }
@@ -93,7 +97,7 @@ main {
 .hero-list li {
     margin-bottom: 10px;
     font-weight: 400;
-    font-size: 20px;
+    font-size: 1.25rem;
     line-height: 24px;
     display: flex;
     gap: 16px;
@@ -101,7 +105,7 @@ main {
 
 @media screen and (max-width: 650px) {
     .hero-list li {
-        font-size: 14px;
+        font-size: 0.875rem;
         line-height: 16px;
     }
 }
@@ -133,7 +137,7 @@ main {
     height: 50px;
     font-style: normal;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 0.85rem;
     line-height: 17px;
     text-decoration: none;
     max-width: 155px;
@@ -175,26 +179,14 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 5%;
     width: 100%;
     position: relative;
     max-width: 1144px;
-    margin: 75px auto 0;
+    margin: auto;
+    padding: 1%;
     height: 100%;
-}
-
-@media screen and (max-width: 650px) {
-    .container {
-        margin: auto 0;
-        justify-content: center;
-    }
-}
-
-@media screen and (max-width: 375px) { 
-    .container {
-        justify-content: flex-start;
-        margin-top: 25px;
-    }
 }
 
 .row {
@@ -203,11 +195,7 @@ button:hover {
     align-items: center;
 }
 
-@media screen and (max-width: 650px) { 
-    .container {
-        padding: 0 5%;
-    }
-}
+
 
 .logo {
     display: block;
@@ -225,15 +213,19 @@ button:hover {
 
 
 .controls {
+    position: absolute;
+    top: 3%;
+    left: 3%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    z-index: 2;
 }
 
 .controls button {
-    width: 50px;
-    height: 50px;
+    width: 3.125rem;
+    height: 3.125rem;
     background-color: transparent;
     border: 1px solid #2D2F36;
     box-shadow: 0px 4px 30px 0px #00000026;
@@ -248,7 +240,7 @@ button:hover {
 
 #troubleshoot {
     color: #50B163;
-    font-size: 14px;
+    font-size: 0.85rem;
     font-weight: 600;
     line-height: 17.36px;
 }
@@ -258,8 +250,8 @@ video {
     height: 100%;
     /* max-width: 305px;
     max-height: 305px; */
-    max-width: 238px;
-    max-height: 238px;
+    max-width: 14.85rem;
+    max-height: 14.85rem;
     object-fit: cover;
     background: #000000;
     border: 4px solid #303030;
@@ -269,42 +261,27 @@ video {
     background-position: center;
 }
 
-/* #qrcode {
-    scale: 0.4;
-} */
-
 #qrcode {
-    width: 300px;
-    height: 300px;
+    width:  14.75rem;
+    height: 14.75rem;
     background-color: #fff;
     /* display: flex; */
     justify-content: center;
     align-items: center;
     border-radius: 5px;
-    margin-top: -40px;
 }
 
 #qrcode > canvas {
     width: 100%;
     height: 100%;
-    max-width: 220px;
-    max-height: 220px;
+    padding: 1.5rem;
 }
 
 #qrcode > img {
     width: 100%;
     height: 100%;
-    max-width: 220px;
-    max-height: 220px;
+    padding: 1.5rem;
 }
-
-/* @media screen and (max-width: 376px) {
-    #qrcode {
-        width: 210px;
-        height: 210px;
-        padding: 3%;
-    }
-} */
 
 @media screen and (max-width: 650px) { 
     #step-icon {
@@ -312,13 +289,12 @@ video {
     }
 }
 #step-info {
-    margin-top: 14px;
-    margin-bottom: 17px;
+    margin-top: 0.85rem;
 }
 
 #step-info {
    color: #50B163;
-   font-size: 12px;
+   font-size: 0.75rem;
    line-height: 14px;
    letter-spacing: 0.06em;
    text-align: center;
@@ -328,27 +304,33 @@ video {
 #title {
     font-style: normal;
     font-weight: 700;
-    font-size: 26px;
+    font-size: 1.625rem;
     line-height: 31px;
     text-align: center;
-    max-width: 300px;
-    margin: 12px 0;
+    max-width: 280px;
+    margin: 0.75rem 0;
+}
+
+@media screen and (max-width: 850px) { 
+    #title {
+        max-width: 320px;
+    }
 }
 
 #subtitle {
     font-style: normal;
     font-weight: 400;
-    font-size: 20px;
+    font-size: 1.25rem;
     line-height: 24px;
     text-align: center;
-    max-width: 300px;
+    max-width: 250px;
     margin-top: 0;
-    margin-bottom: 36px;
     opacity: 0.6;
 }
 
 #heroImg {
-    margin-bottom: 60px;
+    margin-top: 1rem;
+    margin-bottom: 3rem;
 }
 
 #nextstep {
@@ -360,14 +342,14 @@ video {
     padding: 17px 68px;
     font-style: normal;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 0.875rem;
     line-height: 17px;
     font-family: 'din-2014','source sans pro', sans-serif;
     max-height: 50px;
 }
 
 #helptext {
-    font-size: 20px;
+    font-size: 1.25rem;
     color: #fff;
     opacity: 0.6;
     font-weight: 400;
@@ -379,10 +361,10 @@ video {
 
 #progressbar {
     appearance: none;
-    max-width: 200px;
+    max-width: 12.5rem;
     width: 100%;
     height: 3px;
-    margin-top: 10px;
+    margin-top: 0.625rem;
 }
 
 @media screen and (max-width: 650px) { 
@@ -403,7 +385,7 @@ video {
     color: #fff;
     text-decoration: none;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 0.875rem;
     line-height: 17px;
     padding: 16px 60px;
     max-width: 160px;
@@ -414,7 +396,6 @@ video {
     /* display: flex; */
     justify-content: center;
     align-items: center;
-    margin-top: -36px;
 }
 
 #camera-error {
@@ -429,10 +410,10 @@ video {
 }
 
 #camera-error-modal {
-    width: 295px;
-    height: 330px;
+    width: 18.45rem;
+    height: 20.625rem;
     background-color: #2C3037;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 400;
     line-height: 24px;
     text-align: center;
@@ -449,13 +430,13 @@ video {
 }
 
 #camera-error-modal > img {
-    width: 53px;
+    width: 3.3125rem;
     margin-bottom: 1em;
 }
 
 #camera-error-modal > div > h4 {
     font-weight: 700;
-    font-size: 20px;
+    font-size: 1.25rem;
     line-height: 24px;
     color: #fff;
     margin-bottom: 5px;
@@ -463,7 +444,7 @@ video {
 
 #camera-error-modal > div > p {
     font-weight: 400;
-    font-size: 14px;
+    font-size: 0.85rem;
     line-height: 17px;
     color: #9E9E9E;
 }
@@ -477,7 +458,7 @@ video {
     padding: 17px 63px;
     font-style: normal;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 0.85rem;
     line-height: 17px;
     font-family: 'din-2014','source sans pro', sans-serif;
     max-height: 50px;
@@ -485,10 +466,14 @@ video {
 
 #camera-error-modal > a {
     color: #50B163;
-    font-size: 14px;
+    font-size: 0.85rem;
     font-weight: 600;
     line-height: 17.36px;
     text-decoration: none;
+}
+
+#finalImg {
+    height: 35vh;
 }
 
 @media screen and (max-width: 450px) { 
@@ -497,32 +482,23 @@ video {
     }
 }
 
-/* for max-width 375px */
 @media screen and (max-width: 375px) { 
+    .container {
+        padding: 7px 5%;
+        gap: 2%;
+    }
 
-container {
-    padding: 7px 5%;
-    gap: 2%;
-}
+    #title {
+        font-size: 1.5rem;
+    }
+    .subtitle {
+        font-size: 1.125rem;
+    }
 
-#title {
-    font-size: 24px;
-}
-subtitle {
-    font-size: 18px;
-}
-
-#qrcode{
-    width: 240px;
-}
-
-#qrcode > img, #qrcode > canvas {
-    width: 180px;
-    height: 180px;
-}
-#helptext {
-    font-size: 16px;
-}
-
-
+    #qrcode{
+        width: 15rem;
+    }
+    #helptext {
+        font-size: 1rem;
+    }
 }

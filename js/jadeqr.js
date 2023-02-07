@@ -92,7 +92,6 @@ function showStepOne(){
 function showStepTwo(){
     setScreen = screen[2];
     prev_btn.removeEventListener('click', showStart);
-    controls.style.justifyContent = 'flex-end';
     prev_btn.classList.add('hidden');
     console.log('this is step 2');
     videoElem.classList.add('hidden');
@@ -113,7 +112,6 @@ function showStepTwo(){
 function showStepThree(){
     setScreen = screen[3];
     console.log('this is step 3');
-    controls.style.justifyContent = 'space-between';
     prev_btn.classList.remove('hidden');
     videoElem.classList.remove('hidden');
     stepIcon.src="./images/device-mobile-camera.svg";
@@ -127,9 +125,7 @@ function showStepThree(){
 }
 
 function showStepFourth() {
-    setScreen = screen[4];
-    console.log('this is step 4');
-    controls.style.justifyContent = 'flex-end';
+    setScreen = screen[4];  
     prev_btn.classList.add('hidden');
     videoElem.classList.add('hidden');
     stepIcon.src="./images/checks-light.svg";
@@ -337,7 +333,7 @@ var qrTransport = function() {
                                 text: qrs[counter],
                                 width: 256 * 3,
                                 height: 256 * 3,
-                                colorDark: '#000000',
+                                colorDark: '#000000',   
                                 colorLight: '#ffffff',
                                 correctLevel: QRCode.CorrectLevel.L
                             });
@@ -347,7 +343,7 @@ var qrTransport = function() {
                         }
                         timeout = setTimeout(function() {
                             qr_updater(counter + 1)
-                        }, 3000);
+                        }, 5000);
                     };
                     qr_updater(0);
                     if( setScreen === "stepOne") {
