@@ -190,6 +190,13 @@ button:hover {
     }
 }
 
+@media screen and (max-width: 375px) { 
+    .container {
+        justify-content: flex-start;
+        margin-top: 25px;
+    }
+}
+
 .row {
     display: flex;
     flex-direction: column;
