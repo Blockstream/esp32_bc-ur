@@ -7,8 +7,8 @@ rm -fr *.wasm src/*wasm
 if [[ ! -f emsdk/emsdk_env.sh ]]; then
     git clone https://github.com/emscripten-core/emsdk.git
     pushd emsdk
-    ./emsdk install latest
-    ./emsdk activate latest
+    ./emsdk install 3.1.30
+    ./emsdk activate 3.1.30
     popd
 fi
 
