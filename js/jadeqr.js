@@ -296,7 +296,7 @@ var qrTransport = function() {
                             'number', 'number'
                         ],
                         [
-                            [encoder_ptr], 'jade-pin', encoded, encoded.length, 10,
+                            [encoder_ptr], 'jade-pin', encoded, encoded.length, 50,
                             0, 8
                         ]);
                     let encoder_deref = Module.getValue(encoder_ptr, '*');
@@ -331,8 +331,8 @@ var qrTransport = function() {
                             qr.classList.remove('hidden');
                             qrcode_instance = new QRCode('qrcode', {
                                 text: qrs[counter],
-                                width: 512 * 3,
-                                height: 512 * 3,
+                                width: 256 * 3,
+                                height: 256 * 3,
                                 colorDark: '#000000',   
                                 colorLight: '#ffffff',
                                 correctLevel: QRCode.CorrectLevel.L
@@ -343,7 +343,7 @@ var qrTransport = function() {
                         }
                         timeout = setTimeout(function() {
                             qr_updater(counter + 1)
-                        }, 500);
+                        }, 2000);
                     };
                     qr_updater(0);
                     if( setScreen === "stepOne") {

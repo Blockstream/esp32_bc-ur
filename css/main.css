@@ -482,23 +482,36 @@ video {
     }
 }
 
-@media screen and (max-width: 375px) { 
+@media screen and (max-width: 425px) { 
     .container {
         padding: 7px 5%;
         gap: 2%;
     }
 
-    #title {
-        font-size: 1.5rem;
+    #step-icon {
+        width: 2rem;
+        margin-top: 0;
     }
-    .subtitle {
-        font-size: 1.125rem;
+
+    #step-info {
+        margin-top: 0.2rem;
+    }
+
+    #title {
+        font-size: 1rem;
+        margin: 0;
+    }
+    #subtitle {
+        font-size: 0.85rem;
+        margin-top: 0;
     }
 
     #qrcode{
-        width: 15rem;
+        width: 98vw;
+        height: auto;
     }
     #helptext {
         font-size: 1rem;
+        display: none !important;
     }
 }
