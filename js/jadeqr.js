@@ -343,7 +343,7 @@ var qrTransport = function() {
                         }
                         timeout = setTimeout(function() {
                             qr_updater(counter + 1)
-                        }, 2000);
+                        }, 1000);
                     };
                     qr_updater(0);
                     if( setScreen === "stepOne") {
