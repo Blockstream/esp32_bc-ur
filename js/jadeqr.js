@@ -309,15 +309,12 @@ var qrTransport = function() {
                         ]);
                     let encoder_deref = Module.getValue(encoder_ptr, '*');
                     var next_piece = Module._malloc(4);
+                    console.log(next_piece);
                     var qrs = [];
-                    while (true) {
-                        var is_complete = ccall(
-                            'uris_complete_encoder', 'number', ['number'],
-                            [encoder_deref]);
-                        console.log(is_complete);
-                        if (is_complete) {
-                            break;
-                        }
+                    var seq_len = ccall(
+                        'urseqlen_encoder', 'number', ['number'],
+                         [encoder_deref]);
+                    for(i = 0; i < (2 * seq_len); i++){
                         ccall(
                             'urnext_part_encoder', null, ['number', [['number']]],
                             [encoder_deref, [[next_piece]]]);
