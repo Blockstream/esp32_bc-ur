@@ -18,6 +18,7 @@ const progressBarElem = document.getElementById('progressbar');
 const exploreLink = document.getElementById('explore');
 // const labelProgressElem = document.getElementById('labelprogressbar');
 const errorCameraMsg = document.getElementById('camera-error');
+const closeModalBtn = document.getElementById('close-modal');
 
 // End UI elements
 
@@ -28,7 +29,7 @@ let setScreen = "start";
 // End State
 
 function openHome(){
-    window.open('/pinqr/', '_self');
+    window.open('/pinqr/index.html', '_self');
 }
 
 function eventScreenOne() {
@@ -59,6 +60,7 @@ function showStart(){
     stepIcon.classList.add('hidden');
     stepInfo.classList.add('hidden');
     title.innerText = 'Enter your PIN on Jade to Unlock';
+    title.classList.add('startTitle');
     subtitle.innerText = "Unlock your Jade to continue";
     videoElem.classList.add('hidden');
     heroImg.classList.remove('hidden');
@@ -79,6 +81,7 @@ function showStepOne(){
     stepIcon.classList.remove('hidden');
     stepInfo.innerText = 'STEP 1 OF 4';
     stepInfo.classList.remove('hidden');
+    title.classList.remove('startTitle');
     title.innerText = 'Scan QR on Jade';
     subtitle.innerText = "Locate your Jade's blind oracle";
     heroImg.classList.add('hidden');
@@ -162,7 +165,6 @@ function showFinal(){
     next_btn.removeEventListener('click', eventScreenFinal);
 }
 
-
 // End Control UI elements
 // Check if a camera is enabled on the browser
 function checkIfCameraIsEnabled(){
@@ -176,11 +178,17 @@ function checkIfCameraIsEnabled(){
           if(permissionStatus.state !== 'granted') {
             console.log("Permission denied for the camera");
             errorCameraMsg.classList.remove('hidden');
+            closeModalBtn.addEventListener('click', ()=>{
+                errorCameraMsg.classList.add('hidden');
+            }, { once: true });
             videoElem.style.backgroundImage = "none";
           }
         });
       } else {
         errorCameraMsg.classList.remove('hidden');
+        closeModalBtn.addEventListener('click', ()=>{
+            errorCameraMsg.classList.add('hidden');
+        }, { once: true });
         videoElem.style.backgroundImage = "none";
         console.log("Web camera is not available");
         // alert("Web camera is not available");
@@ -306,6 +314,7 @@ var qrTransport = function() {
                         var is_complete = ccall(
                             'uris_complete_encoder', 'number', ['number'],
                             [encoder_deref]);
+                        console.log(is_complete);
                         if (is_complete) {
                             break;
                         }

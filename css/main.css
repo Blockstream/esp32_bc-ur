@@ -28,6 +28,12 @@ header {
     border-bottom: 1px solid #2C2E35;
 }
 
+@media screen and (max-width: 450px) {
+    header {
+        height: 65px;
+    }
+}
+
 main {
     position: relative;
     height: calc(100vh - 80px);
@@ -189,6 +195,14 @@ button:hover {
     height: 100%;
 }
 
+@media screen and (max-width: 450px) {
+    .container {
+        justify-content: unset;
+        /* margin-top: 10vh; */
+        margin-top: 5vh;
+    }
+}
+
 .row {
     display: flex;
     flex-direction: column;
@@ -205,6 +219,12 @@ button:hover {
 .logo-img {
     max-width: 110px;
     width: 100%;
+}
+
+@media screen and (max-width: 450px) { 
+    .logo-img {
+        max-width: 100px;
+    }
 }
 
 .hidden {
@@ -269,6 +289,13 @@ video {
     justify-content: center;
     align-items: center;
     border-radius: 5px;
+}
+
+@media screen and (min-width: 1920px) { 
+    #qrcode { 
+        width:  20rem;
+        height: 20rem;
+    }
 }
 
 #qrcode > canvas {
@@ -373,6 +400,12 @@ video {
     }    
 }
 
+@media screen and (max-width: 380px) { 
+    #progressbar {
+        margin-top: 5%;
+    } 
+}
+
 #progressbar::-webkit-progress-bar{
     background: rgba(77, 173, 148, 0.2);
 }
@@ -424,9 +457,38 @@ video {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-evenly;
     padding: 2em 1.5em;
     border-radius: 5px;
+}
+
+#close-modal {
+    width: 24px;
+    height: 24px;
+    right: 15px;
+    display: block;
+    top: 10px;
+    position: absolute;
+    transition: all 0.2s ease;
+}
+
+#close-modal:hover {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#close-modal:active {
+    scale: 0.9;
+    transition: all 0.2s ease;
+}
+
+#close-modal:hover > svg {
+    fill: #9E9E9E;
+}
+
+#close-modal > svg{
+    fill: #fff;
+    
 }
 
 #camera-error-modal > img {
@@ -513,5 +575,11 @@ video {
     #helptext {
         font-size: 1rem;
         display: none !important;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .startTitle {
+        margin-top: 10vh !important;
     }
 }
