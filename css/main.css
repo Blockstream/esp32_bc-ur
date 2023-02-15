@@ -201,6 +201,10 @@ button:hover {
         /* margin-top: 10vh; */
         margin-top: 5vh;
     }
+
+    .ios-safari {
+        margin-top: 0 !important;
+    }
 }
 
 .row {
@@ -575,6 +579,16 @@ video {
     #helptext {
         font-size: 1rem;
         display: none !important;
+    }
+}
+
+@media screen and (max-width: 325px) { 
+    #title {
+        max-width: 250px;
+    }
+    #qrcode{
+        width: 90vw;
+        height: auto;
     }
 }
 

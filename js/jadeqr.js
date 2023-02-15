@@ -1,6 +1,7 @@
 const browser = bowser.getParser(window.navigator.userAgent);
 // UI elements
 const mainContainer = document.getElementsByTagName('main')[0];
+const secondaryContainer = document.querySelector('.container');
 const controls = document.querySelector('.controls');
 const prev_btn = document.getElementById('backstep');
 const stepIcon = document.getElementById('step-icon');
@@ -49,6 +50,9 @@ function eventScreenFinal() {
 
 // Control UI elements
 function showStart(){
+    if (browser.getBrowser().name === 'Safari'){ 
+        secondaryContainer.classList.remove('ios-safari');
+    }
     setScreen = screen[0];
     errorCameraMsg.classList.add('hidden');
     prev_btn.removeEventListener('click', showStart);
@@ -93,6 +97,9 @@ function showStepOne(){
 }
 
 function showStepTwo(){
+    if (browser.getBrowser().name === 'Safari'){ 
+        secondaryContainer.classList.add('ios-safari');
+    }
     setScreen = screen[2];
     prev_btn.removeEventListener('click', showStart);
     prev_btn.classList.add('hidden');
@@ -113,6 +120,9 @@ function showStepTwo(){
 }
 
 function showStepThree(){
+    if (browser.getBrowser().name === 'Safari'){ 
+        secondaryContainer.classList.remove('ios-safari');
+    }
     setScreen = screen[3];
     console.log('this is step 3');
     prev_btn.classList.remove('hidden');
@@ -128,6 +138,9 @@ function showStepThree(){
 }
 
 function showStepFourth() {
+    if (browser.getBrowser().name === 'Safari'){ 
+        secondaryContainer.classList.add('ios-safari');
+    }
     setScreen = screen[4];  
     prev_btn.classList.add('hidden');
     videoElem.classList.add('hidden');
@@ -147,6 +160,9 @@ function showStepFourth() {
 }
 
 function showFinal(){
+    if (browser.getBrowser().name === 'Safari'){ 
+        secondaryContainer.classList.remove('ios-safari');
+    }
     next_btn.onclick = null;
     setScreen = screen[5];
     console.log('this is final step');
