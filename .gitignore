@@ -14,12 +14,12 @@ Icon
 
 # emscripten
 emsdk
-testbcur.html
+qrpin.html
 .shell_minimal.html.swp
 js/.jadeqr.js.swp
 test/test.wasm
-testbcur.js
-testbcur.wasm
+qrpin.js
+qrpin.wasm
 
 
 # Files that might appear in the root of a volume

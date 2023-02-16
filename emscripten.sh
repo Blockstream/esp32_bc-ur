@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -fr testbcur.html
+rm -fr qrpin.html
 rm -fr *.a src/*.a *.o src/*.o
 rm -fr *.wasm src/*wasm
 
@@ -57,5 +57,5 @@ em++ -gsource-map -v \
     -s STACK_OVERFLOW_CHECK=2 \
     -s EXIT_RUNTIME=0 \
     -s EXPORTED_RUNTIME_METHODS=ccall,cwrap,getValue,setValue \
-    -o testbcur.html \
+    -o qrpin.html \
     --shell-file shell_minimal.html
