@@ -548,7 +548,7 @@ video {
     }
 }
 
-@media screen and (max-width: 425px) { 
+@media screen and (max-width: 450px) { 
     .container {
         padding: 7px 5%;
         gap: 2%;
