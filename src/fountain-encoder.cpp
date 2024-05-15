@@ -12,6 +12,7 @@
 #include <vector>
 #include <limits>
 #include <cbor.h>
+#include <esp_crc.h>
 using namespace std;
 
 namespace ur {
@@ -177,7 +178,7 @@ ByteVector FountainEncoder::Part::cbor() const {
 FountainEncoder::FountainEncoder(const ByteVector& message, size_t max_fragment_len, uint32_t first_seq_num, size_t min_fragment_len) {
     assert(message.size() <= std::numeric_limits<uint32_t>::max());
     message_len_ = message.size();
-    checksum_ = crc32_int(message);
+    checksum_ = esp_crc32_le(0, message.data(), message.size());
     fragment_len_ = find_nominal_fragment_length(message_len_, min_fragment_len, max_fragment_len);
     fragments_ = partition_message(message, fragment_len_);
     seq_num_ = first_seq_num;

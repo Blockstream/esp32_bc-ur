@@ -9,6 +9,8 @@
 #include "utils.hpp"
 #include <stdexcept>
 #include <algorithm>
+#include <cstring>
+#include <esp_crc.h>
 
 namespace ur {
 
@@ -122,6 +124,13 @@ static string encode(const ByteVector& buf, const string& separator) {
         words.push_back(get_word(byte));
     }
     return join(words, separator);
+}
+
+static inline ByteVector crc32_bytes(const ByteVector &buf) {
+    uint32_t checksum = __builtin_bswap32(esp_crc32_le(0, buf.data(), buf.size()));
+    ByteVector result(sizeof(checksum));
+    std::memcpy(result.data(), &checksum, sizeof(checksum));
+    return result;
 }
 
 static ByteVector add_crc(const ByteVector& buf) {
