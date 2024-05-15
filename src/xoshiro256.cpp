@@ -54,9 +54,8 @@ void Xoshiro256::set_s(const std::array<uint8_t, 32>& a) {
 }
 
 void Xoshiro256::hash_then_set_s(const ByteVector& bytes) {
-    auto digest = sha256(bytes);
     std::array<uint8_t, 32> a;
-    memcpy(a.data(), &digest[0], 32);
+    sha256(bytes, a);
     set_s(a);
 }
 

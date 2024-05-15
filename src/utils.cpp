@@ -26,16 +26,13 @@ namespace ur {
 
 #define SHA256_LEN 32
 
-ByteVector sha256(const ByteVector &buf) {
-    array<uint8_t,SHA256_LEN> digest;
+void sha256(const ByteVector &buf, std::array<uint8_t, SHA256_LEN> &digest) {
     mbedtls_sha256_context ctx;
     mbedtls_sha256_init(&ctx);
     mbedtls_sha256_starts(&ctx, 0);
     mbedtls_sha256_update(&ctx, buf.data(), buf.size());
     mbedtls_sha256_finish(&ctx, digest.data());
     mbedtls_sha256_free(&ctx);
-
-    return {digest.begin(), digest.end()};
 }
 
 ByteVector crc32_bytes(const ByteVector &buf) {
