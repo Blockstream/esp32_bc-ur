@@ -13,6 +13,7 @@ extern "C" {
 
 }
 
+#include <array>
 #include <vector>
 #include <algorithm>
 #include <cctype>
@@ -26,34 +27,34 @@ namespace ur {
 #define SHA256_LEN 32
 
 ByteVector sha256(const ByteVector &buf) {
-    uint8_t digest[SHA256_LEN];
+    array<uint8_t,SHA256_LEN> digest;
     mbedtls_sha256_context ctx;
     mbedtls_sha256_init(&ctx);
     mbedtls_sha256_starts(&ctx, 0);
-    mbedtls_sha256_update(&ctx, &buf[0], buf.size());
-    mbedtls_sha256_finish(&ctx, digest);
+    mbedtls_sha256_update(&ctx, buf.data(), buf.size());
+    mbedtls_sha256_finish(&ctx, digest.data());
     mbedtls_sha256_free(&ctx);
 
-    return ByteVector(digest, digest + SHA256_LEN);
+    return {digest.begin(), digest.end()};
 }
 
 ByteVector crc32_bytes(const ByteVector &buf) {
-    uint32_t checksum = ur_crc32n(&buf[0], buf.size());
-    auto cbegin = (uint8_t*)&checksum;
-    auto cend = cbegin + sizeof(uint32_t);
-    return ByteVector(cbegin, cend);
+    uint32_t checksum = ur_crc32n(buf.data(), buf.size());
+    auto *cbegin = (uint8_t*)&checksum;
+    auto *cend = cbegin + sizeof(uint32_t);
+    return {cbegin, cend};
 }
 
 uint32_t crc32_int(const ByteVector &buf) {
-    return ur_crc32(&buf[0], buf.size());
+    return ur_crc32(buf.data(), buf.size());
 }
 
 ByteVector string_to_bytes(const string& s) {
-    return ByteVector(s.begin(), s.end());
+    return {s.begin(), s.end()};
 }
 
 string data_to_hex(const ByteVector& in) {
-    auto hex = "0123456789abcdef";
+    const string hex = "0123456789abcdef";
     string result;
     for(auto c: in) {
         result.append(1, hex[(c >> 4) & 0xF]);
@@ -121,7 +122,7 @@ StringVector split(const string& s, char separator) {
         }
 	}
 
-	if(buf != "") {
+	if(!buf.empty()) {
         result.push_back(buf);
     }
 
@@ -142,12 +143,12 @@ string take_first(const string &s, size_t count) {
     auto first = s.begin();
     auto c = min(s.size(), count);
     auto last = first + c;
-    return string(first, last);
+    return {first, last};
 }
 
 string drop_first(const string& s, size_t count) {
     if(count >= s.length()) { return ""; }
-    return string(s.begin() + count, s.end());
+    return {s.begin() + count, s.end()};
 }
 
 void xor_into(ByteVector& target, const ByteVector& source) {

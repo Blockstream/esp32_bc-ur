@@ -12,8 +12,8 @@ using namespace std;
 
 namespace ur {
 
-UR::UR(const std::string &type, const ByteVector &cbor)
-    : type_(type), cbor_(cbor)
+UR::UR(std::string type, ByteVector cbor)
+    : type_(std::move(type)), cbor_(std::move(cbor))
 {}
 
 bool UR::is_valid() const {
