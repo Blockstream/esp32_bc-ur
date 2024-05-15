@@ -23,7 +23,7 @@ using ByteVector = std::vector<uint8_t, PSRAMAllocator<uint8_t>>;
 using ByteVectorVector = std::vector<ByteVector, PSRAMAllocator<ByteVector>>;
 using StringVector = std::vector<std::string, PSRAMAllocator<std::string>>;
 
-ByteVector sha256(const ByteVector &buf);
+void sha256(const ByteVector &buf, std::array<uint8_t, 32> &digest);
 ByteVector crc32_bytes(const ByteVector &buf);
 uint32_t crc32_int(const ByteVector &buf);
 
