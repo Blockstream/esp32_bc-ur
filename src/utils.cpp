@@ -11,35 +11,11 @@
 #include <vector>
 #include <algorithm>
 #include <cctype>
-#include <mbedtls/sha256.h>
-#include <esp_crc.h>
 
 
 using namespace std;
 
 namespace ur {
-
-#define SHA256_LEN 32
-
-void sha256(const ByteVector &buf, std::array<uint8_t, SHA256_LEN> &digest) {
-    mbedtls_sha256_context ctx;
-    mbedtls_sha256_init(&ctx);
-    mbedtls_sha256_starts(&ctx, 0);
-    mbedtls_sha256_update(&ctx, buf.data(), buf.size());
-    mbedtls_sha256_finish(&ctx, digest.data());
-    mbedtls_sha256_free(&ctx);
-}
-
-ByteVector crc32_bytes(const ByteVector &buf) {
-    uint32_t checksum = __builtin_bswap32(crc32_int(buf));
-    auto *cbegin = (uint8_t*)&checksum;
-    auto *cend = cbegin + sizeof(uint32_t);
-    return {cbegin, cend};
-}
-
-uint32_t crc32_int(const ByteVector &buf) {
-    return esp_crc32_le(0, buf.data(), buf.size());
-}
 
 ByteVector string_to_bytes(const string& s) {
     return {s.begin(), s.end()};

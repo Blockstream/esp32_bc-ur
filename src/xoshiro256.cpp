@@ -8,6 +8,7 @@
 #include "xoshiro256.hpp"
 #include <limits>
 #include <cstring>
+#include <mbedtls/sha256.h>
 
 /*  Written in 2018 by David Blackman and Sebastiano Vigna (vigna@acm.org)
 
@@ -55,7 +56,12 @@ void Xoshiro256::set_s(const std::array<uint8_t, 32>& a) {
 
 void Xoshiro256::hash_then_set_s(const ByteVector& bytes) {
     std::array<uint8_t, 32> a;
-    sha256(bytes, a);
+    mbedtls_sha256_context ctx;
+    mbedtls_sha256_init(&ctx);
+    mbedtls_sha256_starts(&ctx, 0);
+    mbedtls_sha256_update(&ctx, bytes.data(), bytes.size());
+    mbedtls_sha256_finish(&ctx, a.data());
+    mbedtls_sha256_free(&ctx);
     set_s(a);
 }
 
