@@ -13,12 +13,12 @@
 #include <utility>
 #include <string>
 #include <array>
-#include <assert.h>
+#include <cassert>
 
 namespace ur {
 
-typedef std::vector<uint8_t> ByteVector;
-typedef std::vector<std::string> StringVector;
+using ByteVector = std::vector<uint8_t>;
+using StringVector = std::vector<std::string>;
 
 ByteVector sha256(const ByteVector &buf);
 ByteVector crc32_bytes(const ByteVector &buf);
