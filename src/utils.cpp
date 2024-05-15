@@ -24,10 +24,8 @@ using namespace std;
 
 namespace ur {
 
-ByteVector sha256(const ByteVector &buf) {
-    array<uint8_t,SHA256_DIGEST_LENGTH> digest;
+void sha256(const ByteVector &buf, std::array<uint8_t, SHA256_DIGEST_LENGTH> &digest) {
     sha256_Raw(buf.data(), buf.size(), digest.data());
-    return {digest.begin(), digest.end()};
 }
 
 ByteVector crc32_bytes(const ByteVector &buf) {
