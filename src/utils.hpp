@@ -13,15 +13,15 @@
 #include <utility>
 #include <string>
 #include <array>
-#include <assert.h>
+#include <cassert>
 
 #include "psram-allocator.hpp"
 
 namespace ur {
 
-typedef std::vector<uint8_t, PSRAMAllocator<uint8_t>> ByteVector;
-typedef std::vector<ByteVector, PSRAMAllocator<ByteVector>> ByteVectorVector;
-typedef std::vector<std::string, PSRAMAllocator<std::string>> StringVector;
+using ByteVector = std::vector<uint8_t, PSRAMAllocator<uint8_t>>;
+using ByteVectorVector = std::vector<ByteVector, PSRAMAllocator<ByteVector>>;
+using StringVector = std::vector<std::string, PSRAMAllocator<std::string>>;
 
 ByteVector sha256(const ByteVector &buf);
 ByteVector crc32_bytes(const ByteVector &buf);

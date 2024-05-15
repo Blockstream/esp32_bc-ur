@@ -8,7 +8,7 @@
 #include "random-sampler.hpp"
 #include <numeric>
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 
 using namespace std;
 
