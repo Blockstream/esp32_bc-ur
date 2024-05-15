@@ -7,17 +7,12 @@
 
 #include "utils.hpp"
 
-extern "C" {
-
-#include "crc32.h"
-
-}
-
 #include <array>
 #include <vector>
 #include <algorithm>
 #include <cctype>
 #include <mbedtls/sha256.h>
+#include <esp_crc.h>
 
 
 using namespace std;
@@ -36,14 +31,14 @@ void sha256(const ByteVector &buf, std::array<uint8_t, SHA256_LEN> &digest) {
 }
 
 ByteVector crc32_bytes(const ByteVector &buf) {
-    uint32_t checksum = ur_crc32n(buf.data(), buf.size());
+    uint32_t checksum = __builtin_bswap32(crc32_int(buf));
     auto *cbegin = (uint8_t*)&checksum;
     auto *cend = cbegin + sizeof(uint32_t);
     return {cbegin, cend};
 }
 
 uint32_t crc32_int(const ByteVector &buf) {
-    return ur_crc32(buf.data(), buf.size());
+    return esp_crc32_le(0, buf.data(), buf.size());
 }
 
 ByteVector string_to_bytes(const string& s) {
