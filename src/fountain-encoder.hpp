@@ -38,7 +38,6 @@ public:
         const ByteVector& data() const { return data_; }
 
         ByteVector cbor() const;
-        std::string description() const;
 
     private:
         uint32_t seq_num_;

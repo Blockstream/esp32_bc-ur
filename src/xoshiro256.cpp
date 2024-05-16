@@ -32,80 +32,29 @@ See <http://creativecommons.org/publicdomain/zero/1.0/>. */
 namespace ur {
 
 static inline uint64_t rotl(const uint64_t x, int k) {
-	return (x << k) | (x >> (64 - k));
+    return (x << k) | (x >> (64 - k));
 }
 
-Xoshiro256::Xoshiro256(const std::array<uint64_t, 4>& a) {
-    s[0] = a[0];
-    s[1] = a[1];
-    s[2] = a[2];
-    s[3] = a[3];
-}
-
-void Xoshiro256::set_s(const std::array<uint8_t, 32>& a) {
-    for(int i = 0; i < 4; i++) {
+Xoshiro256::Xoshiro256(const std::array<uint8_t, 8>& a) {
+    std::array<uint8_t, 32> r;
+    mbedtls_sha256_context ctx;
+    mbedtls_sha256_init(&ctx);
+    mbedtls_sha256_starts(&ctx, 0);
+    mbedtls_sha256_update(&ctx, a.data(), 8);
+    mbedtls_sha256_finish(&ctx, r.data());
+    mbedtls_sha256_free(&ctx);
+    for(int i = 0; i < 4; ++i) {
         auto o = i * 8;
         uint64_t v = 0;
-        for(int n = 0; n < 8; n++) {
+        for(int n = 0; n < 8; ++n) {
             v <<= 8;
-            v |= a[o + n];
+            v |= r[o + n];
         }
         s[i] = v;
     }
 }
 
-void Xoshiro256::hash_then_set_s(const ByteVector& bytes) {
-    std::array<uint8_t, 32> a;
-    mbedtls_sha256_context ctx;
-    mbedtls_sha256_init(&ctx);
-    mbedtls_sha256_starts(&ctx, 0);
-    mbedtls_sha256_update(&ctx, bytes.data(), bytes.size());
-    mbedtls_sha256_finish(&ctx, a.data());
-    mbedtls_sha256_free(&ctx);
-    set_s(a);
-}
-
-Xoshiro256::Xoshiro256(const std::array<uint8_t, 32>& a) {
-    set_s(a);
-}
-
-Xoshiro256::Xoshiro256(const ByteVector& bytes) {
-    hash_then_set_s(bytes);
-}
-
-Xoshiro256::Xoshiro256(const std::string& s) {
-    ByteVector bytes(s.begin(), s.end());
-    hash_then_set_s(bytes);
-}
-
-Xoshiro256::Xoshiro256(uint32_t crc32) {
-    auto bytes = int_to_bytes(crc32);
-    hash_then_set_s(bytes);
-}
-
-double Xoshiro256::next_double() {
-    auto m = ((double)std::numeric_limits<uint64_t>::max()) + 1;
-    return next() / m;
-}
-
-uint64_t Xoshiro256::next_int(uint64_t low, uint64_t high) {
-    return uint64_t(next_double() * (high - low + 1)) + low;
-}
-
-uint8_t Xoshiro256::next_byte() {
-    return uint8_t(next_int(0, 255));
-}
-
-ByteVector Xoshiro256::next_data(size_t count) {
-    ByteVector result;
-    result.reserve(count);
-    for(int i = 0; i < count; i++) {
-        result.push_back(next_byte());
-    }
-    return result;
-}
-
-uint64_t Xoshiro256::next() {
+static inline uint64_t next(std::array<uint64_t,4>& s) {
 	const uint64_t result = rotl(s[1] * 5, 7) * 9;
 
 	const uint64_t t = s[1] << 17;
@@ -122,60 +71,13 @@ uint64_t Xoshiro256::next() {
 	return result;
 }
 
-/* This is the jump function for the generator. It is equivalent
-   to 2^128 calls to next(); it can be used to generate 2^128
-   non-overlapping subsequences for parallel computations. */
-
-void Xoshiro256::jump() {
-	static const uint64_t JUMP[] = { 0x180ec6d33cfd0aba, 0xd5a61266f0c9392c, 0xa9582618e03fc9aa, 0x39abdc4529b1661c };
-
-	uint64_t s0 = 0;
-	uint64_t s1 = 0;
-	uint64_t s2 = 0;
-	uint64_t s3 = 0;
-	for(int i = 0; i < sizeof JUMP / sizeof *JUMP; i++)
-		for(int b = 0; b < 64; b++) {
-			if ((JUMP[i] & UINT64_C(1) << b) != 0u) {
-				s0 ^= s[0];
-				s1 ^= s[1];
-				s2 ^= s[2];
-				s3 ^= s[3];
-			}
-			next();
-		}
-
-	s[0] = s0;
-	s[1] = s1;
-	s[2] = s2;
-	s[3] = s3;
+uint64_t Xoshiro256::next_int(uint64_t low, uint64_t high) {
+    return uint64_t(next_double() * (high - low + 1)) + low;
 }
 
-/* This is the long-jump function for the generator. It is equivalent to
-   2^192 calls to next(); it can be used to generate 2^64 starting points,
-   from each of which jump() will generate 2^64 non-overlapping
-   subsequences for parallel distributed computations. */
-
-void Xoshiro256::long_jump() {
-	static const std::array<uint64_t,4> LONG_JUMP = { 0x76e15d3efefdcbbf, 0xc5004e441c522fb3, 0x77710069854ee241, 0x39109bb02acbe635 };
-	uint64_t s0 = 0;
-	uint64_t s1 = 0;
-	uint64_t s2 = 0;
-	uint64_t s3 = 0;
-	for(int i = 0; i < LONG_JUMP.size(); i++)
-		for(int b = 0; b < 64; b++) {
-			if (LONG_JUMP[i] & UINT64_C(1) << b) {
-				s0 ^= s[0];
-				s1 ^= s[1];
-				s2 ^= s[2];
-				s3 ^= s[3];
-			}
-			next();
-		}
-
-	s[0] = s0;
-	s[1] = s1;
-	s[2] = s2;
-	s[3] = s3;
+double Xoshiro256::next_double() {
+    const auto m = ((double)std::numeric_limits<uint64_t>::max()) + 1;
+    return next(s) / m;
 }
 
 }
