@@ -8,14 +8,14 @@
 #include "fountain-utils.hpp"
 #include "random-sampler.hpp"
 #include "utils.hpp"
-
+#include <limits>
 using namespace std;
 
 namespace ur {
 
-size_t choose_degree(size_t seq_len, Xoshiro256& rng) {
+static inline size_t choose_degree(size_t seq_len, Xoshiro256& rng) {
     vector<double> degree_probabilities;
-    for(int i = 1; i <= seq_len; i++) {
+    for(int i = 1; i <= seq_len; ++i) {
         degree_probabilities.push_back(1.0 / i);
     }
     auto degree_chooser = RandomSampler(degree_probabilities);
@@ -29,13 +29,36 @@ PartIndexes choose_fragments(uint32_t seq_num, size_t seq_len, uint32_t checksum
     if(seq_num <= seq_len) {
         return PartIndexes({seq_num - 1});
     } else {
-        auto seed = join(vector({int_to_bytes(seq_num), int_to_bytes(checksum)}));
+        std::array<uint8_t, 8> seed;
+        seed[0] = (seq_num >> 24) & 0xff;
+        seed[1] = (seq_num >> 16) & 0xff;
+        seed[2] = (seq_num >> 8) & 0xff;
+        seed[3] = seq_num & 0xff;
+        seed[4] = (checksum >> 24) & 0xff;
+        seed[5] = (checksum >> 16) & 0xff;
+        seed[6] = (checksum >> 8) & 0xff;
+        seed[7] = checksum & 0xff;
+
         auto rng = Xoshiro256(seed);
-        auto degree = choose_degree(seq_len, rng);
+        const auto degree = choose_degree(seq_len, rng);
+
         vector<size_t> indexes;
         indexes.reserve(seq_len);
-        for(int i = 0; i < seq_len; i++) { indexes.push_back(i); }
-        auto shuffled_indexes = shuffled(indexes, rng);
+
+        for(size_t i = 0; i < seq_len; ++i) {
+            indexes.push_back(i);
+        }
+
+        // Fisher-Yates shuffle
+        std::vector<size_t> shuffled_indexes;
+        shuffled_indexes.reserve(degree);
+        while(shuffled_indexes.size() != degree) {
+            const auto index = rng.next_int(0, indexes.size() - 1);
+            const auto item = indexes[index];
+            indexes.erase(indexes.begin() + index);
+            shuffled_indexes.push_back(item);
+        }
+
         return PartIndexes(shuffled_indexes.begin(), shuffled_indexes.begin() + degree);
     }
 }

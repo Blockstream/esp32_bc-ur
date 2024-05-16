@@ -61,7 +61,7 @@ bool FountainDecoder::receive_part(FountainEncoder::Part& encoder_part) {
     }
 
     // Keep track of how many parts we've processed
-    processed_parts_count_ += 1;
+    ++processed_parts_count_;
 
     return true;
 }
@@ -85,37 +85,41 @@ void FountainDecoder::process_queue_item() {
 }
 
 void FountainDecoder::reduce_mixed_by(const Part& p) {
-    // Reduce all the current mixed parts by the given part
     PartVector reduced_parts;
-    for(auto i = _mixed_parts.begin(); i != _mixed_parts.end(); i++) {
-        reduced_parts.push_back(reduce_part_by_part(i->second, p));
+    reduced_parts.reserve(_mixed_parts.size());
+
+    for (auto it = _mixed_parts.begin(); it != _mixed_parts.end(); ++it) {
+        reduced_parts.push_back(reduce_part_by_part(it->second, p));
     }
 
-    // Collect all the remaining mixed parts
     PartDict new_mixed;
-    for(auto reduced_part: reduced_parts) {
-        // If this reduced part is now simple
-        if(reduced_part.is_simple()) {
-            // Add it to the queue
+
+    for (auto& reduced_part : reduced_parts) {
+        if (reduced_part.is_simple()) {
             enqueue(reduced_part);
         } else {
-            // Otherwise, add it to the list of current mixed parts
-            new_mixed.insert(pair(reduced_part.indexes(), reduced_part));
+            new_mixed.emplace(reduced_part.indexes(), move(reduced_part));
         }
     }
-    _mixed_parts = new_mixed;
+
+    _mixed_parts = move(new_mixed);
 }
 
+
 FountainDecoder::Part FountainDecoder::reduce_part_by_part(const Part& a, const Part& b) const {
-    // If the fragments mixed into `b` are a strict (proper) subset of those in `a`...
-    if(is_strict_subset(b.indexes(), a.indexes())) {
-        // The new fragments in the revised part are `a` - `b`.
+    if (is_strict_subset(b.indexes(), a.indexes())) {
         auto new_indexes = set_difference(a.indexes(), b.indexes());
-        // The new data in the revised part are `a` XOR `b`
-        auto new_data = xor_with(a.data(), b.data());
+
+        ByteVector new_data = a.data();
+        const auto& s = b.data();
+        const size_t count = new_data.size();
+
+        for (size_t i = 0; i < count; ++i) {
+            new_data[i] ^= s[i];
+        }
+
         return Part(new_indexes, new_data);
     } else {
-        // `a` is not reducable by `b`, so return a
         return a;
     }
 }
@@ -123,30 +127,39 @@ FountainDecoder::Part FountainDecoder::reduce_part_by_part(const Part& a, const 
 void FountainDecoder::process_simple_part(Part& p) {
     // Don't process duplicate parts
     auto fragment_index = p.index();
-    if(contains(received_part_indexes_, fragment_index)) return;
+    if (received_part_indexes_.find(fragment_index) != received_part_indexes_.end()) return;
 
     // Record this part
-    _simple_parts.insert(pair(p.indexes(), p));
+    _simple_parts.emplace(p.indexes(), p);
     received_part_indexes_.insert(fragment_index);
 
     // If we've received all the parts
-    if(received_part_indexes_ == _expected_part_indexes) {
+    if (received_part_indexes_ == _expected_part_indexes) {
         // Reassemble the message from its fragments
         PartVector sorted_parts;
-        transform(_simple_parts.begin(), _simple_parts.end(), back_inserter(sorted_parts), [&](auto elem) { return elem.second; });
+        sorted_parts.reserve(_simple_parts.size());
+        for (const auto& elem : _simple_parts) {
+            sorted_parts.push_back(elem.second);
+        }
+
         sort(sorted_parts.begin(), sorted_parts.end(),
             [](const Part& a, const Part& b) -> bool {
                 return a.index() < b.index();
             }
         );
+
         ByteVectorVector fragments;
-        transform(sorted_parts.begin(), sorted_parts.end(), back_inserter(fragments), [&](auto part) { return part.data(); });
+        fragments.reserve(sorted_parts.size());
+        for (const auto& part : sorted_parts) {
+            fragments.push_back(part.data());
+        }
+
         auto message = join_fragments(fragments, *_expected_message_len);
 
         // Verify the message checksum and note success or failure
         auto checksum = esp_crc32_le(0, message.data(), message.size());
-        if(checksum == _expected_checksum) {
-            result_ = message;
+        if (checksum == _expected_checksum) {
+            result_ = move(message);
         } else {
             result_ = InvalidChecksum();
         }
@@ -158,23 +171,27 @@ void FountainDecoder::process_simple_part(Part& p) {
 
 void FountainDecoder::process_mixed_part(const Part& p) {
     // Don't process duplicate parts
-    if(any_of(_mixed_parts.begin(), _mixed_parts.end(), [&](auto r) { return r.first == p.indexes(); })) {
+    if (any_of(_mixed_parts.begin(), _mixed_parts.end(), [&](const auto& r) { return r.first == p.indexes(); })) {
         return;
     }
-
     // Reduce this part by all the others
-    auto p2 = accumulate(_simple_parts.begin(), _simple_parts.end(), p, [&](auto p, auto r) { return reduce_part_by_part(p, r.second); });
-    p2 = accumulate(_mixed_parts.begin(), _mixed_parts.end(), p2, [&](auto p, auto r) { return reduce_part_by_part(p, r.second); });
+    Part p2 = p;
+    for (const auto& r : _simple_parts) {
+        p2 = reduce_part_by_part(p2, r.second);
+    }
+    for (const auto& r : _mixed_parts) {
+        p2 = reduce_part_by_part(p2, r.second);
+    }
 
     // If the part is now simple
-    if(p2.is_simple()) {
+    if (p2.is_simple()) {
         // Add it to the queue
         enqueue(p2);
     } else {
         // Reduce all the mixed parts by this one
         reduce_mixed_by(p2);
         // Record this new mixed part
-        _mixed_parts.insert(pair(p2.indexes(), p2));
+        _mixed_parts.emplace(p2.indexes(), p2);
     }
 }
 
@@ -185,7 +202,7 @@ bool FountainDecoder::validate_part(const FountainEncoder::Part& p) {
     if(!_expected_part_indexes.has_value()) {
         // Record the things that all the other parts we see will have to match to be valid.
         _expected_part_indexes = PartIndexes();
-        for(size_t i = 0; i < p.seq_len(); i++) { _expected_part_indexes->insert(i); }
+        for(size_t i = 0; i < p.seq_len(); ++i) { _expected_part_indexes->insert(i); }
         _expected_message_len = p.message_len();
         _expected_checksum = p.checksum();
         _expected_fragment_len = p.data().size();

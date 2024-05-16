@@ -15,25 +15,25 @@ using namespace std;
 namespace ur {
 
 RandomSampler::RandomSampler(std::vector<double> probs) {
-    for(auto p: probs) { assert(p >= 0); }
+    for(const auto& p : probs) {
+        assert(p >= 0);
+    }
 
     // Normalize given probabilities
-    auto sum = accumulate(probs.begin(), probs.end(), 0.0);
+    double sum = std::accumulate(probs.begin(), probs.end(), 0.0);
     assert(sum > 0);
 
-    auto n = probs.size();
+    size_t n = probs.size();
+    std::vector<double> P(n);
+    std::transform(probs.begin(), probs.end(), P.begin(), [&](double d) { return d * double(n) / sum; });
 
-    vector<double> P;
-    P.reserve(n);
-    transform(probs.begin(), probs.end(), back_inserter(P), [&](double d) { return d * double(n) / sum; });
-
-    vector<int> S;
+    std::vector<int> S;
+    std::vector<int> L;
     S.reserve(n);
-    vector<int> L;
     L.reserve(n);
 
     // Set separate index lists for small and large probabilities:
-    for(int i = n - 1; i >= 0; i--) {
+    for(size_t i = n; i-- > 0;) {
         // at variance from Schwarz, we reverse the index order
         if(P[i] < 1) {
             S.push_back(i);
@@ -43,8 +43,8 @@ RandomSampler::RandomSampler(std::vector<double> probs) {
     }
 
     // Work through index lists
-    vector<double> _probs(n, 0);
-    vector<int> _aliases(n, 0);
+    std::vector<double> _probs(n, 0);
+    std::vector<int> _aliases(n, 0);
     while(!S.empty() && !L.empty()) {
         auto a = S.back(); S.pop_back(); // Schwarz's l
         auto g = L.back(); L.pop_back(); // Schwarz's g
@@ -69,8 +69,8 @@ RandomSampler::RandomSampler(std::vector<double> probs) {
         S.pop_back();
     }
 
-    this->probs_ = _probs;
-    this->aliases_ = _aliases;
+    this->probs_ = std::move(_probs);
+    this->aliases_ = std::move(_aliases);
 }
 
 int RandomSampler::next(std::function<double()> rng) {

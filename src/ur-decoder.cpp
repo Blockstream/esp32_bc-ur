@@ -9,11 +9,13 @@
 #include "bytewords.hpp"
 #include "utils.hpp"
 
+using namespace std;
+
 extern "C" {
 
 void urcreate_decoder(void** const decoder) {
     assert(decoder && !*decoder);
-    *decoder = new(std::nothrow) ur::URDecoder();
+    *decoder = new(nothrow) ur::URDecoder();
     assert(*decoder);
 }
 
@@ -36,10 +38,10 @@ void urfree_placement_decoder(void* const decoder) {
     urdecoder->~URDecoder();
 }
 
-bool urreceive_part_decoder(void* const decoder, const char* string) {
+bool urreceive_part_decoder(void* const decoder, const char* s) {
     assert(decoder);
     ur::URDecoder* urdecoder = (ur::URDecoder*) decoder;
-    const std::string part(string);
+    const string part(s);
     return urdecoder->receive_part(part);
 }
 
@@ -97,35 +99,34 @@ void urresult_ur_decoder(void* const decoder, uint8_t** result, size_t* result_l
 
 }
 
-using namespace std;
-
 namespace ur {
 
 UR URDecoder::decode(const string& s) {
     auto [type, components] = parse(s);
-    auto body = !components.empty() ? components.front() : std::string();
-    return decode(type, body);
+    auto body = !components.empty() ? components.front() : string();
+    return decode(type, move(body));
 }
 
 URDecoder::URDecoder() { }
 
-UR URDecoder::decode(const std::string& type, const std::string& body) {
+UR URDecoder::decode(const string& type, const string& body) {
     auto cbor = Bytewords::decode(Bytewords::style::minimal, body);
     return UR(type, cbor);
 }
 
 pair<string, StringVector> URDecoder::parse(const string& s) {
     // Don't consider case
-    auto lowered = to_lowercase(s);
+    string lowered;
+    lowered.resize(s.size());
+    transform(s.begin(), s.end(), lowered.begin(), [](unsigned char c){ return tolower(c); });
 
     // Validate URI scheme
-    if(!has_prefix(lowered, "ur:")) {
-       return pair(string(), StringVector());
+    if(!has_prefix(lowered, "ur:") || 3 >= lowered.length()) {
+       return {};
     }
-    auto path = drop_first(lowered, 3);
 
     // Split the remainder into path components
-    auto components = split(path, '/');
+    auto components = split(lowered.substr(3), '/');
 
     // Make sure there are at least two path components
     if(components.size() < 2) {
@@ -134,7 +135,7 @@ pair<string, StringVector> URDecoder::parse(const string& s) {
     // Validate the type
     auto type = components.front();
     if(!is_ur_type(type)) {
-       return pair(string(), StringVector());
+       return {};
     }
 
     auto comps = StringVector(components.begin() + 1, components.end());
@@ -154,7 +155,7 @@ pair<uint32_t, size_t> URDecoder::parse_sequence_component(const string& s) {
    return pair(seq_num, seq_len);
 }
 
-bool URDecoder::validate_part(const std::string& type) {
+bool URDecoder::validate_part(const string& type) {
     if(!expected_type_.has_value()) {
         if(!is_ur_type(type)) return false;
         expected_type_ = type;
@@ -164,7 +165,7 @@ bool URDecoder::validate_part(const std::string& type) {
     }
 }
 
-bool URDecoder::receive_part(const std::string& s) {
+bool URDecoder::receive_part(const string& s) {
     // Don't process the part if we're already done
     if(result_.has_value()) return false;
 

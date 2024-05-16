@@ -21,20 +21,6 @@ namespace ur {
 
 typedef std::set<size_t, std::less<size_t>, PSRAMAllocator<size_t>> PartIndexes;
 
-// Fisher-Yates shuffle
-template<typename T>
-std::vector<T> shuffled(const std::vector<T>& items, Xoshiro256& rng) {
-    auto remaining = items;
-    std::vector<T> result;
-    while(!remaining.empty()) {
-        auto index = rng.next_int(0, remaining.size() - 1);
-        auto item = remaining[index];
-        remaining.erase(remaining.begin() + index);
-        result.push_back(item);
-    }
-    return result;
-}
-
 // Return `true` if `a` is a strict subset of `b`.
 template<typename T, typename C, typename A>
 bool is_strict_subset(const std::set<T, C, A>& a, const std::set<T, C, A>& b) {
@@ -54,7 +40,6 @@ bool contains(const std::set<T, C, A>& s, const T& v) {
     return s.find(v) != s.end();
 }
 
-size_t choose_degree(size_t seq_len, Xoshiro256& rng);
 PartIndexes choose_fragments(uint32_t seq_num, size_t seq_len, uint32_t checksum);
 
 }
