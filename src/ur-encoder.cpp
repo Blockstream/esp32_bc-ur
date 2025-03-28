@@ -9,6 +9,9 @@
 #include "bytewords.hpp"
 #include "utils.hpp"
 #include <cstring>
+#ifndef ESP_PLATFORM
+#include <bsd/string.h>
+#endif
 
 extern "C" {
 

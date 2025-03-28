@@ -157,7 +157,7 @@ void FountainDecoder::process_simple_part(Part& p) {
         auto message = join_fragments(fragments, *_expected_message_len);
 
         // Verify the message checksum and note success or failure
-        auto checksum = esp_crc32_le(0, message.data(), message.size());
+        const auto checksum = esp_crc32_le(0, message.data(), message.size());
         if (checksum == _expected_checksum) {
             result_ = move(message);
         } else {
