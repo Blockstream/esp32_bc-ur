@@ -104,7 +104,7 @@ static inline ByteVector crc32_bytes(const ByteVector &buf) {
 }
 
 string Bytewords::encode(style style, const ByteVector& bytes) {
-    auto crc_buf = crc32_bytes(bytes);
+    const auto crc_buf = crc32_bytes(bytes);
     ByteVector result = bytes;
     append(result, crc_buf);
 
