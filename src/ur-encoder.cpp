@@ -74,10 +74,10 @@ void urnext_part_encoder(void* const encoder, const bool force_uppercase, char**
     (*next) = (char*)malloc(encoded.size() + 1);
     if (force_uppercase) {
         std::transform(encoded.begin(), encoded.end(), *next, ::toupper);
-        (*next)[encoded.size()] = '\0';  // ensure terminated
     } else {
-        strlcpy(*next, encoded.c_str(), encoded.size() + 1);
+        std::copy(encoded.begin(), encoded.end(), *next);
     }
+    (*next)[encoded.size()] = '\0';  // ensure terminated
 }
 
 void urfree_encoded_encoder(char * encoded) {
