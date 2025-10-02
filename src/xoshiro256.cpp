@@ -37,12 +37,7 @@ static inline uint64_t rotl(const uint64_t x, int k) {
 
 Xoshiro256::Xoshiro256(const std::array<uint8_t, 8>& a) {
     std::array<uint8_t, 32> r;
-    mbedtls_sha256_context ctx;
-    mbedtls_sha256_init(&ctx);
-    mbedtls_sha256_starts(&ctx, 0);
-    mbedtls_sha256_update(&ctx, a.data(), 8);
-    mbedtls_sha256_finish(&ctx, r.data());
-    mbedtls_sha256_free(&ctx);
+    mbedtls_sha256(a.data(), a.size(), r.data(), 0);
     for(int i = 0; i < 4; ++i) {
         auto o = i * 8;
         uint64_t v = 0;
