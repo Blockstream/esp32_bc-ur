@@ -19,4 +19,12 @@
 #include "xoshiro256.hpp"
 #include "random-sampler.hpp"
 
+#ifndef ESP_PLATFORM
+namespace ur {
+
+#include "cbor-lite.hpp"
+
+}
+#endif
+
 #endif // BC_UR_HPP
