@@ -20,7 +20,7 @@ void urcreate_decoder(void** const decoder) {
 }
 
 void urcreate_placement_decoder(void* const decoder, size_t decoder_len) {
-    assert(decoder && decoder_len == sizeof(ur::URDecoder));
+    assert(decoder && decoder_len >= sizeof(ur::URDecoder));
     void* tmp = new(decoder) ur::URDecoder();
     assert(tmp);
 }

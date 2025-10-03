@@ -3,7 +3,12 @@
 
 #include <stddef.h>
 
+#ifdef ESP_PLATFORM
 #define URDECODER_SIZE 288
+#else
+// Enough for a 64 bit platform
+#define URDECODER_SIZE 536
+#endif
 
 int urcreate_decoder(void** const decoder);
 void urcreate_placement_decoder(void* const decoder, size_t decoder_len);

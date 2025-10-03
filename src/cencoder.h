@@ -3,7 +3,12 @@
 
 #include <stddef.h>
 
+#ifdef ESP_PLATFORM
 #define URENCODER_SIZE 88
+#else
+// Enough for a 64 bit platform
+#define URENCODER_SIZE 160
+#endif
 
 void urcreate_encoder(void** const encoder, const char* type, const uint8_t* cbor, size_t cbor_len, size_t max_fragment_len, uint32_t first_seq_num, size_t min_fragment_len);
 void urcreate_placement_encoder(void* const encoder, size_t encoder_len, const char* type, const uint8_t* cbor, size_t cbor_len, size_t max_fragment_len, uint32_t first_seq_num, size_t min_fragment_len);
