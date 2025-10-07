@@ -1,7 +1,18 @@
 if(DEFINED ESP_PLATFORM AND ESP_PLATFORM EQUAL 1)
-    idf_component_register(SRC_DIRS "src"
-            PRIV_REQUIRES mbedtls cbor
-            INCLUDE_DIRS "src")
+    idf_component_register(SRCS
+            "src/bytewords.cpp"
+            "src/crc32.c"
+            "src/fountain-decoder.cpp"
+            "src/fountain-encoder.cpp"
+            "src/fountain-utils.cpp"
+            "src/random-sampler.cpp"
+            "src/ur.cpp"
+            "src/ur-decoder.cpp"
+            "src/ur-encoder.cpp"
+            "src/utils.cpp"
+            "src/xoshiro256.cpp"
+        PRIV_REQUIRES mbedtls cbor
+        INCLUDE_DIRS "src")
 
     target_compile_features(${COMPONENT_LIB} PRIVATE cxx_std_20)
     target_compile_options(${COMPONENT_LIB} PRIVATE -ffast-math)
