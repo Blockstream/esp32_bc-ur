@@ -24,7 +24,8 @@ public:
 
     T* allocate(std::size_t n) {
       const size_t size = n * sizeof(T);
-      return static_cast<T*>(heap_caps_malloc_prefer(size, MALLOC_CAP_DEFAULT | MALLOC_CAP_SPIRAM, MALLOC_CAP_DEFAULT));
+      return static_cast<T*>(heap_caps_malloc_prefer(size, 2, MALLOC_CAP_DEFAULT | MALLOC_CAP_SPIRAM,
+                                                     MALLOC_CAP_DEFAULT));
     }
 
     void deallocate(T* ptr, std::size_t n) noexcept {
