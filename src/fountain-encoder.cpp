@@ -21,7 +21,7 @@ size_t FountainEncoder::find_nominal_fragment_length(size_t message_len, size_t 
     assert(message_len > 0);
     assert(min_fragment_len > 0);
     assert(max_fragment_len >= min_fragment_len);
-    const auto max_fragment_count = message_len / min_fragment_len;
+    const auto max_fragment_count = std::max<size_t>(1, message_len / min_fragment_len);
 
     optional<size_t> fragment_len;
     for(size_t fragment_count = 1; fragment_count <= max_fragment_count; ++fragment_count) {
