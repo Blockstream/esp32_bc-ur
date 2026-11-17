@@ -73,7 +73,7 @@ void urnext_part_encoder(void* const encoder, const bool force_uppercase, char**
     std::string encoded = urencoder->next_part();
     (*next) = (char*)malloc(encoded.size() + 1);
     if (force_uppercase) {
-        std::transform(encoded.begin(), encoded.end(), *next, ::toupper);
+        std::transform(encoded.begin(), encoded.end(), *next, [](unsigned char c) { return toupper(c); });
     } else {
         std::copy(encoded.begin(), encoded.end(), *next);
     }

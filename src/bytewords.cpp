@@ -72,8 +72,8 @@ static inline bool decode_word(const string& word, size_t word_len, uint8_t& out
         return false;
     }
 
-    int x = tolower(word[0]) - 'a';
-    int y = tolower(word[word_len == 4 ? 3 : 1]) - 'a';
+    int x = tolower(static_cast<unsigned char>(word[0])) - 'a';
+    int y = tolower(static_cast<unsigned char>(word[word_len == 4 ? 3 : 1])) - 'a';
 
     if (static_cast<unsigned>(x) >= dim || static_cast<unsigned>(y) >= dim) {
         return false;
@@ -87,7 +87,8 @@ static inline bool decode_word(const string& word, size_t word_len, uint8_t& out
 
     if (word_len == 4) {
         const char* byteword = bytewords + value * 4;
-        if (tolower(word[1]) != byteword[1] || tolower(word[2]) != byteword[2]) {
+        if (tolower(static_cast<unsigned char>(word[1])) != byteword[1]
+            || tolower(static_cast<unsigned char>(word[2])) != byteword[2]) {
             return false;
         }
     }
