@@ -6,6 +6,7 @@
 //
 
 #include "crc32.h"
+#include <stdbool.h>
 #include <memory.h>
 
 #ifdef ARDUINO
@@ -17,10 +18,10 @@
 #endif
 
 uint32_t ur_crc32(const uint8_t* bytes, size_t len) {
-    static uint32_t* table = NULL;
+    static uint32_t table[256];
+    static bool table_ready = false;
 
-    if(table == NULL) {
-        table = malloc(256 * sizeof(uint32_t));
+    if(!table_ready) {
         for(int i = 0; i < 256; i++) {
             uint32_t c = i;
             for(int j = 0; j < 8; j++) {
@@ -28,6 +29,7 @@ uint32_t ur_crc32(const uint8_t* bytes, size_t len) {
             }
             table[i] = c;
         }
+        table_ready = true;
     }
 
     uint32_t crc = ~0;
