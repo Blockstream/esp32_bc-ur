@@ -12,7 +12,11 @@
 #include <vector>
 #include <limits>
 #include <cbor.h>
+#ifdef ESP_PLATFORM
 #include <esp_crc.h>
+#else
+#include "crc32.h"
+#endif
 using namespace std;
 
 namespace ur {
