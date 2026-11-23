@@ -8,7 +8,13 @@
 #include "xoshiro256.hpp"
 #include <limits>
 #include <cstring>
+#ifdef ESP_PLATFORM
 #include <mbedtls/sha256.h>
+#else
+extern "C" {
+#include "sha2.h"
+}
+#endif
 
 /*  Written in 2018 by David Blackman and Sebastiano Vigna (vigna@acm.org)
 
@@ -37,7 +43,12 @@ static inline uint64_t rotl(const uint64_t x, int k) {
 
 Xoshiro256::Xoshiro256(const std::array<uint8_t, 8>& a) {
     std::array<uint8_t, 32> r;
+#ifdef ESP_PLATFORM
     mbedtls_sha256(a.data(), a.size(), r.data(), 0);
+#else
+    // Not ESP-IDF: the bundled SHA-256
+    sha256_Raw(a.data(), a.size(), r.data());
+#endif
     for(int i = 0; i < 4; ++i) {
         auto o = i * 8;
         uint64_t v = 0;

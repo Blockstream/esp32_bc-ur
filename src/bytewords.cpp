@@ -10,7 +10,11 @@
 #include <stdexcept>
 #include <algorithm>
 #include <cstring>
+#ifdef ESP_PLATFORM
 #include <esp_crc.h>
+#else
+#include "crc32.h"
+#endif
 
 namespace ur {
 

@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <memory>
 
+#ifdef ESP_PLATFORM
 #include <esp_heap_caps.h>
 
 template <typename T>
@@ -42,5 +43,10 @@ template <typename T, typename U>
 bool operator!=(const PSRAMAllocator<T>& lhs, const PSRAMAllocator<U>& rhs) {
     return !(lhs == rhs);
 }
+#else
+// Not ESP-IDF: no PSRAM, so ByteVector stays a plain std::vector<uint8_t>
+template <typename T>
+using PSRAMAllocator = std::allocator<T>;
+#endif
 
 #endif
