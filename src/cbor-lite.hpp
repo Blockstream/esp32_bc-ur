@@ -8,6 +8,7 @@
 // COPYRIGHT.md file in the top-level folder of the CBOR-lite software
 // distribution.
 
+#include <cstdint>
 #include <exception>
 #include <iterator>
 #include <string>

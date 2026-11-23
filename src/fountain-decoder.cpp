@@ -11,7 +11,11 @@
 #include <string>
 #include <cmath>
 #include <numeric>
+#ifdef ESP_PLATFORM
 #include <esp_crc.h>
+#else
+#include "crc32.h"
+#endif
 
 using namespace std;
 
