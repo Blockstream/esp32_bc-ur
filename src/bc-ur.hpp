@@ -20,6 +20,13 @@
 #include "random-sampler.hpp"
 
 #ifndef ESP_PLATFORM
+// cbor-lite.hpp is included inside namespace ur, so its std headers must come first
+#include <cstdint>
+#include <exception>
+#include <iterator>
+#include <string>
+#include <type_traits>
+
 namespace ur {
 
 #include "cbor-lite.hpp"
