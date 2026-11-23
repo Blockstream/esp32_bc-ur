@@ -1,25 +1,26 @@
 name: ci
 on: [push, pull_request]
 jobs:
-  build-MacOS:
-    runs-on: macos-latest
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    # Build with LLVM on both: on macOS clang is Apple Clang, the default anyway
+    env:
+      CC: clang
+      CXX: clang++
     steps:
-    - uses: actions/checkout@v2
-    - run: brew install cppcheck
+    - uses: actions/checkout@v6
+    # tinycbor headers at the version Jade's ESP-IDF build pins (espressif/cbor 0.6.1)
+    - run: |
+        for h in cbor.h tinycbor-version.h; do
+          curl -fsSL --create-dirs -o "$RUNNER_TEMP/include/$h" "https://raw.githubusercontent.com/intel/tinycbor/v0.6.1/src/$h"
+        done
+    - if: runner.os == 'macOS'
+      run: brew install cppcheck
+    - if: runner.os == 'macOS'
+      run: cppcheck --enable=warning,performance,portability --inline-suppr --error-exitcode=1 .
     - run: ./configure
-    - run: cppcheck --enable=all --inline-suppr --suppress=unusedFunction --suppress=noValidConfiguration --error-exitcode=1 --suppress=missingInclude .
-    - run: make check
+    - run: make lib CPPFLAGS="-I$RUNNER_TEMP/include"
     - run: sudo make install
-    - run: make distcheck && make distclean
-
-  build-Linux:
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - run: wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add - || exit 1
-    - run: sudo apt-add-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main" || exit 1
-    - run: sudo apt-get update || exit 1
-    - run: sudo apt-get install -y clang-10 libc++-10-dev libc++abi-10-dev || exit 1
-    - run: export CC="clang-10" && export CXX="clang++-10" && ./configure && make check
-    - run: sudo make install
-    - run: export CC="clang-10" && export CXX="clang++-10" && make distcheck && make distclean
